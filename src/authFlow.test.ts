@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { authErrorMessage, safeNext } from "./authFlow";
+import { authErrorMessage, needsEmailCode, safeNext } from "./authFlow";
 
 describe("safeNext", () => {
   it("keeps paths inside the app", () => {
@@ -24,5 +24,17 @@ describe("authErrorMessage", () => {
   it("falls back to a plain sentence for bare HTTP errors and non-errors", () => {
     for (const err of [new Error("HTTP 500 Internal Server Error"), "boom", undefined])
       expect(authErrorMessage(err)).toBe("That didn't work. Check your details and try again.");
+  });
+});
+
+describe("needsEmailCode", () => {
+  it("is true for Neon's email-not-confirmed error", () => {
+    const err = Object.assign(new Error("Email verification required"), { code: "email_not_confirmed" });
+    expect(needsEmailCode(err)).toBe(true);
+  });
+
+  it("is false for any other failure", () => {
+    for (const err of [new Error("Invalid email or password"), { code: "email_not_confirmed" }, undefined])
+      expect(needsEmailCode(err)).toBe(false);
   });
 });

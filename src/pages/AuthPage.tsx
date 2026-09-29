@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { API_URL } from "../api";
-import { authErrorMessage, safeNext } from "../authFlow";
+import { authErrorMessage, needsEmailCode, safeNext } from "../authFlow";
 import { loadAuth, useSession } from "../session";
 
 const GITHUB_MARK =
@@ -19,18 +19,32 @@ export function AuthPage({ mode }: { mode: "signin" | "signup" }) {
   const [error, setError] = useState<string | undefined>(
     params.get("error") === "oauth" ? "GitHub sign-in didn't finish. Try again." : undefined,
   );
+  const [notice, setNotice] = useState<string | undefined>(
+    params.get("confirmed") ? "Email confirmed. Sign in to continue." : undefined,
+  );
+  // Set while an account waits for the code that confirms its email address.
+  const [codeFor, setCodeFor] = useState<string | null>(null);
+  const [code, setCode] = useState("");
   const signup = mode === "signup";
 
   useEffect(() => {
-    document.title = `${signup ? "Create your account" : "Sign in"} · Receipts`;
-  }, [signup]);
+    document.title = `${codeFor ? "Confirm your email" : signup ? "Create your account" : "Sign in"} · Receipts`;
+  }, [signup, codeFor]);
 
   if (user) return <Navigate to={next} replace />;
+
+  async function sendCode(address: string) {
+    await (await loadAuth()).emailOtp.sendVerificationOtp({ email: address, type: "email-verification" });
+    setCodeFor(address);
+    setCode("");
+    setNotice(`We sent a 6-digit code to ${address}. It can take a minute to arrive.`);
+  }
 
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(undefined);
+    setNotice(undefined);
     try {
       const authClient = await loadAuth();
       const result = signup
@@ -38,8 +52,43 @@ export function AuthPage({ mode }: { mode: "signin" | "signup" }) {
         : await authClient.signIn.email({ email, password });
       if (result.error) throw new Error(result.error.message ?? "");
       if (await refresh()) return navigate(next, { replace: true });
-      // Signed up, but the project requires a confirmed email before the first sign-in.
-      setError("Check your inbox to confirm your email address, then sign in.");
+      // Sign-up returns no session token when the project wants a confirmed email first.
+      if ((result.data as { token?: string | null } | null)?.token === null) await sendCode(email);
+      else setError("You're signed in, but this browser didn't keep the session. Try again.");
+    } catch (err) {
+      try {
+        if (needsEmailCode(err)) await sendCode(email);
+        else setError(authErrorMessage(err));
+      } catch (sendErr) {
+        setError(authErrorMessage(sendErr));
+      }
+    }
+    setBusy(false);
+  }
+
+  async function verify(e: FormEvent) {
+    e.preventDefault();
+    if (!codeFor) return;
+    setBusy(true);
+    setError(undefined);
+    try {
+      const result = await (await loadAuth()).emailOtp.verifyEmail({ email: codeFor, otp: code });
+      if (result.error) throw new Error(result.error.message ?? "");
+      if (await refresh()) return navigate(next, { replace: true });
+      // The project doesn't sign people in after confirming: send them to sign in.
+      return navigate(`/signin?confirmed=1${next !== "/app" ? `&next=${encodeURIComponent(next)}` : ""}`, { replace: true });
+    } catch (err) {
+      setError(authErrorMessage(err));
+    }
+    setBusy(false);
+  }
+
+  async function resend() {
+    if (!codeFor) return;
+    setBusy(true);
+    setError(undefined);
+    try {
+      await sendCode(codeFor);
     } catch (err) {
       setError(authErrorMessage(err));
     }
@@ -64,6 +113,52 @@ export function AuthPage({ mode }: { mode: "signin" | "signup" }) {
 
   const switchTo = `${signup ? "/signin" : "/signup"}${next !== "/app" ? `?next=${encodeURIComponent(next)}` : ""}`;
 
+  if (codeFor)
+    return (
+      <div className="auth">
+        <h1 className="page-title">Confirm your email</h1>
+        <p className="lead">Enter the code we emailed you to finish.</p>
+        <div className="auth-card">
+          <form className="form form--tight" onSubmit={verify}>
+            {notice && (
+              <p className="hint" role="status">
+                {notice}
+              </p>
+            )}
+            <div className="field">
+              <label className="label" htmlFor="code">
+                Verification code
+              </label>
+              <input
+                id="code"
+                className="input input--code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              />
+            </div>
+            {error && (
+              <p className="error" role="alert">
+                {error}
+              </p>
+            )}
+            <button type="submit" className="btn btn--primary btn--block" disabled={busy || code.length < 6}>
+              {busy ? "One moment…" : "Confirm email"}
+            </button>
+          </form>
+        </div>
+        <p className="hint auth-switch">
+          No email?{" "}
+          <button type="button" className="link-btn" onClick={resend} disabled={busy}>
+            Send a new code
+          </button>
+        </p>
+      </div>
+    );
+
   return (
     <div className="auth">
       <h1 className="page-title">{signup ? "Create your account" : "Sign in"}</h1>
@@ -77,6 +172,11 @@ export function AuthPage({ mode }: { mode: "signin" | "signup" }) {
         </button>
         <p className="divider">or with email</p>
         <form className="form form--tight" onSubmit={submit}>
+          {notice && (
+            <p className="hint" role="status">
+              {notice}
+            </p>
+          )}
           {signup && (
             <div className="field">
               <label className="label" htmlFor="name">

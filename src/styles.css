@@ -1154,3 +1154,9 @@ select {
 .repos__note {
   margin-top: 12px;
 }
+.input--code {
+  font-family: var(--mono);
+  font-size: 22px;
+  letter-spacing: 0.4em;
+  text-align: center;
+}
