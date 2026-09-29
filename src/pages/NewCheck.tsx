@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type InstanceDetail, type InstanceSummary, type PrKind } from "../api";
 import { IssuePicker } from "../components/IssuePicker";
+import { GitHubRepos } from "../components/GitHubRepos";
 import { RecentRuns } from "../components/RecentRuns";
 import { issueNumber } from "../receipt";
 
@@ -192,6 +193,7 @@ export function NewCheckPage() {
 
       <aside className="home__recent">
         <RecentRuns />
+        <GitHubRepos />
       </aside>
     </div>
   );

@@ -1145,3 +1145,12 @@ select {
     padding: 20px;
   }
 }
+
+/* ---------- GitHub repositories (under your receipts) ---------- */
+
+.repos {
+  margin-top: 48px;
+}
+.repos__note {
+  margin-top: 12px;
+}

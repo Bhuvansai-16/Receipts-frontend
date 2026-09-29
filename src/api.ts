@@ -32,6 +32,21 @@ export interface RunSummary {
   finished_at: string | null;
 }
 
+export interface GitHubRepo {
+  full_name: string;
+  url: string;
+  description: string | null;
+  private: boolean;
+  language: string | null;
+  stars: number;
+  pushed_at: string;
+}
+
+export interface GitHubRepos {
+  connected: boolean;
+  repos: GitHubRepo[];
+}
+
 export interface ReceiptEvent {
   type: string;
   data: Record<string, unknown>;
@@ -116,6 +131,7 @@ export const api = {
   instance: (id: string) => get<InstanceDetail>(`/api/instances/${enc(id)}`),
   myRuns: (limit = 12) => get<{ runs: RunSummary[]; next_cursor: string | null }>(`/api/runs?limit=${limit}`),
   run: (id: string) => get<RunResponse>(`/api/runs/${enc(id)}`),
+  githubRepos: () => get<GitHubRepos>("/api/github/repos"),
   start: (body: { instance_id: string; pr: PrKind; diff?: string }) =>
     fetch(`${API_URL}/api/runs`, {
       method: "POST",
