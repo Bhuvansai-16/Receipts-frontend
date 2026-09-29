@@ -44,7 +44,7 @@ interface Props {
   elapsed: number | null;
   onReveal: (sectionId: string) => void;
   /** h2 where the card is not the page's main subject (the landing page). */
-  heading?: "h1" | "h2";
+  heading?: "h1" | "h2" | "h3";
   /** Links into the evidence below the card; off where there is none. */
   actions?: boolean;
 }
