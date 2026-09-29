@@ -4,6 +4,7 @@ export const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8000")
 
 export type Verdict = "PROVEN" | "REFUTED" | "REGRESSION" | "UNPROVEN" | "NO_CHECKABLE_CLAIM";
 export type PrKind = "gold" | "none" | "diff";
+export type RunKind = PrKind | "github";
 export type RunStatus = "queued" | "running" | "done" | "error";
 
 export interface InstanceSummary {
@@ -92,6 +93,7 @@ export interface Evidence {
   seconds?: number;
   tokens?: Record<string, { total_tokens?: number }> | null;
   events?: ReceiptEvent[];
+  source?: { repo: string; pr_number: number; head_sha: string; url?: string };
 }
 
 export interface RunResponse {

@@ -5,9 +5,7 @@ import {
   activeStep,
   formatDuration,
   formatTokens,
-  issueNumber,
-  PR_LABEL,
-  repoOf,
+  receiptTitle,
   type Receipt,
   type Step,
   type Tile,
@@ -56,8 +54,7 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
   const printing = (s: Step) => live && !queued && step === s;
   const [copied, setCopied] = useState(false);
 
-  const repo = evidence.repo ?? repoOf(evidence.instance_id);
-  const pr = evidence.pr ? (PR_LABEL[evidence.pr] ?? evidence.pr) : null;
+  const title = receiptTitle(evidence);
   const wroteTest = r.testAttempts !== undefined;
   const announce = queued ? "Waiting for a free sandbox" : live ? STEP_TEXT[step] : r.verdict ? `Verdict: ${verdictLabel(r.verdict.verdict)}` : "";
 
@@ -79,8 +76,15 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
             Receipt
           </Heading>
           <p className="receipt__meta">
-            {repo} · issue #{issueNumber(evidence.instance_id)}
-            {pr ? ` · ${pr}` : ""}
+            {title.repo} ·{" "}
+            {title.url ? (
+              <a href={title.url} target="_blank" rel="noreferrer">
+                {title.label}
+              </a>
+            ) : (
+              title.label
+            )}
+            {title.pr ? ` · ${title.pr}` : ""}
           </p>
         </header>
         <p className="visually-hidden" aria-live="polite">

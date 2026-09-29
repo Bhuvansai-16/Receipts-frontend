@@ -151,4 +151,21 @@ export function repoOf(instanceId: string): string {
   return instanceId.slice(0, instanceId.lastIndexOf("-")).replace("__", "/");
 }
 
-export const PR_LABEL: Record<string, string> = { gold: "Real fix", none: "Do-nothing PR", diff: "Pasted diff" };
+export const PR_LABEL: Record<string, string> = {
+  gold: "Real fix",
+  none: "Do-nothing PR",
+  diff: "Pasted diff",
+  github: "Pull request",
+};
+
+/** The receipt's heading line: repository, what was checked, and where it lives on GitHub. */
+export function receiptTitle(ev: Evidence): { repo: string; label: string; pr: string | null; url: string | null } {
+  if (ev.source)
+    return { repo: ev.source.repo, label: `PR #${ev.source.pr_number}`, pr: null, url: ev.source.url ?? null };
+  return {
+    repo: ev.repo ?? repoOf(ev.instance_id),
+    label: `issue #${issueNumber(ev.instance_id)}`,
+    pr: ev.pr ? (PR_LABEL[ev.pr] ?? ev.pr) : null,
+    url: null,
+  };
+}

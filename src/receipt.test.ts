@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Evidence, ReceiptEvent } from "./api";
-import { activeStep, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, repoOf, timeAgo } from "./receipt";
+import { activeStep, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, timeAgo } from "./receipt";
 
 const e = (type: string, data: Record<string, unknown> = {}): ReceiptEvent => ({ type, data });
 const fail = (msg: string) => ({ tests: 1, not_passed: { "t.py::t": { outcome: "failed", exc: "AssertionError", msg } }, output_tail: "out" });
@@ -137,5 +137,18 @@ describe("timeAgo", () => {
     expect(timeAgo("2026-09-29T09:00:00Z", now)).toBe("3 hours ago");
     expect(timeAgo("2026-09-28T11:00:00Z", now)).toBe("yesterday");
     expect(timeAgo("not a date", now)).toBe("");
+  });
+});
+
+describe("receiptTitle", () => {
+  it("names the pull request for GitHub runs", () => {
+    const ev = { instance_id: "octo/hello#12", repo: "octo/hello", pr: "github",
+      source: { repo: "octo/hello", pr_number: 12, head_sha: "abc", url: "https://github.com/octo/hello/pull/12" } } as Evidence;
+    expect(receiptTitle(ev)).toEqual({ repo: "octo/hello", label: "PR #12", pr: null, url: "https://github.com/octo/hello/pull/12" });
+  });
+
+  it("names the issue and the kind of PR for SWE-bench runs", () => {
+    const ev = { instance_id: "psf__requests-1142", pr: "gold" } as Evidence;
+    expect(receiptTitle(ev)).toEqual({ repo: "psf/requests", label: "issue #1142", pr: "Real fix", url: null });
   });
 });
