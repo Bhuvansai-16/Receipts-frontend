@@ -75,7 +75,7 @@ export function RunPage() {
       <div className="not-found">
         <h1 className="page-title">No receipt with that id</h1>
         <p className="lead">It may have been removed, or the link is incomplete.</p>
-        <Link to="/" className="btn btn--primary">
+        <Link to="/app" className="btn btn--primary">
           Check a pull request
         </Link>
       </div>

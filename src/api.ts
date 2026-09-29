@@ -1,4 +1,6 @@
-// Typed client for the Receipts API (receipts/server.py).
+// Typed client for the Receipts API (receipts-backend: receipts/server.py).
+
+export const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 export type Verdict = "PROVEN" | "REFUTED" | "REGRESSION" | "UNPROVEN" | "NO_CHECKABLE_CLAIM";
 export type PrKind = "gold" | "none" | "diff";
@@ -18,12 +20,16 @@ export interface InstanceDetail {
 }
 
 export interface RunSummary {
-  run_id: string;
+  id: string;
   instance_id: string;
   pr: string;
   status: RunStatus;
   verdict: Verdict | null;
+  reason: string | null;
+  seconds: number | null;
+  tokens: number | null;
   started_at: string;
+  finished_at: string | null;
 }
 
 export interface ReceiptEvent {
@@ -102,15 +108,18 @@ async function json<T>(res: Response): Promise<T> {
 }
 
 const enc = encodeURIComponent;
+// Credentials on every call: the session cookie belongs to the API's origin.
+const get = <T,>(path: string) => fetch(`${API_URL}${path}`, { credentials: "include" }).then(json<T>);
 
 export const api = {
-  instances: () => fetch("/api/instances").then(json<InstanceSummary[]>),
-  instance: (id: string) => fetch(`/api/instances/${enc(id)}`).then(json<InstanceDetail>),
-  runs: () => fetch("/api/runs").then(json<RunSummary[]>),
-  run: (id: string) => fetch(`/api/runs/${enc(id)}`).then(json<RunResponse>),
+  instances: () => get<InstanceSummary[]>("/api/instances"),
+  instance: (id: string) => get<InstanceDetail>(`/api/instances/${enc(id)}`),
+  myRuns: (limit = 12) => get<{ runs: RunSummary[]; next_cursor: string | null }>(`/api/runs?limit=${limit}`),
+  run: (id: string) => get<RunResponse>(`/api/runs/${enc(id)}`),
   start: (body: { instance_id: string; pr: PrKind; diff?: string }) =>
-    fetch("/api/runs", {
+    fetch(`${API_URL}/api/runs`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     }).then(json<{ run_id: string }>),
@@ -136,7 +145,7 @@ const EVENT_TYPES = [
  * rebuilt from scratch on open: `onEvents` always receives the complete, de-duplicated sequence.
  */
 export function subscribe(runId: string, onEvents: (events: ReceiptEvent[]) => void): () => void {
-  const source = new EventSource(`/api/runs/${enc(runId)}/events`);
+  const source = new EventSource(`${API_URL}/api/runs/${enc(runId)}/events`); // public: no cookies needed
   let events: ReceiptEvent[] = [];
   source.onopen = () => {
     events = [];

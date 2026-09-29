@@ -1,0 +1,129 @@
+{
+ "instance_id": "pydata__xarray-4629",
+ "repo": "pydata/xarray",
+ "patch_files": [
+  "xarray/core/merge.py"
+ ],
+ "started_at": "2026-09-28T14:38:57.982313+00:00",
+ "models": {
+  "classifier": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+  "writer": "nvidia/Nemotron-3_5-Lightning",
+  "scope": "nvidia/nemotron-3-super-120b-a12b",
+  "judge": "nvidia/Nemotron-3-Ultra-550b-a55b"
+ },
+ "claim": {
+  "kind": "fix",
+  "claim": "merge(combine_attrs='override') incorrectly references attrs from the first object instead of copying them, causing unintended side effects when attrs are modified."
+ },
+ "writer": {
+  "attempts": 4,
+  "reason": "fails on unpatched code with AssertionError",
+  "docs_queries": [],
+  "test_code": "import xarray as xr\n\n\ndef test_merge_combine_attrs_override_copies_attrs():\n    \"\"\"Test that merge with combine_attrs='override' copies attrs, not references.\"\"\"\n    xds1 = xr.Dataset(attrs={'a': 'b'})\n    xds2 = xr.Dataset(attrs={'a': 'c'})\n    \n    # Before merge, attrs are distinct\n    assert xds1.a == 'b'\n    assert xds2.a == 'c'\n    \n    # Merge with combine_attrs='override'\n    xds3 = xr.merge([xds1, xds2], combine_attrs='override')\n    \n    # After merge, xds3 should have attrs from first object\n    assert xds3.a == 'b'\n    \n    # Modifying merged dataset's attrs should NOT affect the source\n    xds3.attrs['a'] = 'd'\n    \n    # Source datasets should be unaffected\n    assert xds1.a == 'b', f\"Expected xds1.a to still be 'b', got {xds1.a}\"\n    assert xds2.a == 'c', f\"Expected xds2.a to still be 'c', got {xds2.a}\"\n    assert xds3.a == 'd', f\"Expected xds3.a to be 'd', got {xds3.a}\"\n",
+  "scope_check": "All provided test correctly asserts the bug behavior; no extra cases added."
+ },
+ "forks": {
+  "base_with_test": [
+   {
+    "tests": 1,
+    "not_passed": {
+     "receipts_test.py::test_merge_combine_attrs_override_copies_attrs": {
+      "outcome": "failed",
+      "exc": "AssertionError",
+      "msg": "Expected xds1.a to still be 'b', got d\nassert 'd' == 'b'\n  - b\n  + d"
+     }
+    },
+    "output_tail": ""
+   },
+   {
+    "tests": 1,
+    "not_passed": {
+     "receipts_test.py::test_merge_combine_attrs_override_copies_attrs": {
+      "outcome": "failed",
+      "exc": "AssertionError",
+      "msg": "Expected xds1.a to still be 'b', got d\nassert 'd' == 'b'\n  - b\n  + d"
+     }
+    },
+    "output_tail": ""
+   },
+   {
+    "tests": 1,
+    "not_passed": {
+     "receipts_test.py::test_merge_combine_attrs_override_copies_attrs": {
+      "outcome": "failed",
+      "exc": "AssertionError",
+      "msg": "Expected xds1.a to still be 'b', got d\nassert 'd' == 'b'\n  - b\n  + d"
+     }
+    },
+    "output_tail": ""
+   }
+  ],
+  "pr_with_test": [
+   {
+    "tests": 1,
+    "not_passed": {},
+    "output_tail": ""
+   },
+   {
+    "tests": 1,
+    "not_passed": {},
+    "output_tail": ""
+   },
+   {
+    "tests": 1,
+    "not_passed": {},
+    "output_tail": ""
+   }
+  ],
+  "base_suite": [
+   {
+    "tests": 32,
+    "not_passed": {},
+    "output_tail": ""
+   }
+  ],
+  "pr_suite": [
+   {
+    "tests": 32,
+    "not_passed": {},
+    "output_tail": ""
+   }
+  ]
+ },
+ "verdict": "PROVEN",
+ "reason": "test fails on base and passes on the PR in 3/3 runs; existing tests hold",
+ "seconds": 316.4,
+ "tokens": {
+  "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B": {
+   "input_token_details": {},
+   "total_tokens": 5229,
+   "output_token_details": {},
+   "input_tokens": 4332,
+   "output_tokens": 897
+  },
+  "nvidia/Nemotron-3_5-Lightning": {
+   "input_token_details": {
+    "cache_read": 197024
+   },
+   "total_tokens": 288361,
+   "output_token_details": {
+    "reasoning": 0
+   },
+   "input_tokens": 282427,
+   "output_tokens": 5934
+  },
+  "nvidia/nemotron-3-super-120b-a12b": {
+   "input_tokens": 1857,
+   "output_tokens": 91,
+   "total_tokens": 1948,
+   "input_token_details": {
+    "cache_read": 0
+   },
+   "output_token_details": {
+    "reasoning": 30
+   }
+  }
+ },
+ "run_id": "pydata__xarray-4629-gold-20260928-201414",
+ "pr": "gold"
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Evidence, RunSummaryRaw } from "../api";
+import { API_URL, type Evidence, type RunSummaryRaw } from "../api";
 
 /** Everything behind the verdict, one disclosure per question a reviewer would ask. */
 export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; runId: string }) {
@@ -117,7 +117,7 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
       </div>
 
       <p className="hint" style={{ marginTop: 18 }}>
-        <a href={`/api/runs/${encodeURIComponent(runId)}`}>Raw evidence (JSON)</a>
+        <a href={`${API_URL}/api/runs/${encodeURIComponent(runId)}`}>Raw evidence (JSON)</a>
       </p>
     </section>
   );

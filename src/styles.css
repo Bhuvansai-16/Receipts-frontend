@@ -1017,3 +1017,131 @@ select {
     padding-inline: 20px;
   }
 }
+
+/* ---------- landing ---------- */
+
+.landing {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 440px);
+  gap: 64px;
+  align-items: center;
+}
+.hero-title {
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+.hero-lead {
+  margin-top: 20px;
+  font-size: 19px;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+.hero-ctas {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.how {
+  margin-top: 112px;
+}
+.steps {
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+.steps li {
+  border-top: 1px solid var(--hair);
+  padding-top: 18px;
+}
+.step-n {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.step-title {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 650;
+}
+.step-text {
+  margin-top: 6px;
+  color: var(--ink-2);
+}
+@media (max-width: 960px) {
+  .landing,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+  .how {
+    margin-top: 72px;
+  }
+}
+
+/* ---------- sign in / sign up ---------- */
+
+.auth {
+  max-width: 420px;
+  margin: 8px auto 0;
+}
+.auth-card {
+  margin-top: 28px;
+  padding: 28px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 20px;
+}
+.form--tight {
+  margin-top: 0;
+  gap: 18px;
+}
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--hair);
+}
+.btn--block {
+  width: 100%;
+}
+.btn--github {
+  background: #fff;
+  border-color: var(--line);
+}
+.btn--github:hover:not(:disabled) {
+  background: var(--surface);
+}
+.auth-switch {
+  margin-top: 18px;
+  text-align: center;
+}
+.nav-user {
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .nav-user {
+    display: none;
+  }
+  .auth-card {
+    padding: 20px;
+  }
+}

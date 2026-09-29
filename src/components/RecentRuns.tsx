@@ -1,35 +1,42 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type RunSummary } from "../api";
 import { PR_LABEL, timeAgo } from "../receipt";
 import { VerdictChip } from "./VerdictChip";
 
-const SHOWN = 12;
 const POLL_MS = 5000;
 
 export function RecentRuns() {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [error, setError] = useState<string>();
 
+  const load = useCallback(
+    () =>
+      api.myRuns().then(
+        (page) => (setRuns(page.runs), setError(undefined)),
+        (e: Error) => setError(e.message),
+      ),
+    [],
+  );
+
   useEffect(() => {
-    let alive = true;
-    const load = () =>
-      api
-        .runs()
-        .then((r) => alive && (setRuns(r), setError(undefined)))
-        .catch((e: Error) => alive && setError(e.message));
-    load();
+    void load();
+    window.addEventListener("focus", load);
+    return () => window.removeEventListener("focus", load);
+  }, [load]);
+
+  // Poll only while one of your checks is still going; the ETag makes an unchanged list a cheap 304.
+  const active = runs?.some((run) => run.status === "queued" || run.status === "running") ?? false;
+  useEffect(() => {
+    if (!active) return;
     const timer = setInterval(() => !document.hidden && load(), POLL_MS);
-    return () => {
-      alive = false;
-      clearInterval(timer);
-    };
-  }, []);
+    return () => clearInterval(timer);
+  }, [active, load]);
 
   return (
     <section aria-labelledby="recent-title">
       <h2 id="recent-title" className="section-title">
-        Recent receipts
+        Your receipts
       </h2>
 
       {error && runs === null && (
@@ -46,15 +53,13 @@ export function RecentRuns() {
         </div>
       )}
 
-      {runs?.length === 0 && (
-        <p className="empty">No receipts yet. Run a check and it will show up here, live.</p>
-      )}
+      {runs?.length === 0 && <p className="empty">No receipts yet. Your checks will show up here, live.</p>}
 
       {runs && runs.length > 0 && (
         <ol className="runs">
-          {runs.slice(0, SHOWN).map((run) => (
-            <li key={run.run_id}>
-              <Link to={`/runs/${encodeURIComponent(run.run_id)}`} className="run-row">
+          {runs.map((run) => (
+            <li key={run.id}>
+              <Link to={`/runs/${encodeURIComponent(run.id)}`} className="run-row">
                 <span className="run-row__id">{run.instance_id}</span>
                 <span className="run-row__meta">
                   {PR_LABEL[run.pr] ?? run.pr} · {timeAgo(run.started_at)}

@@ -45,9 +45,13 @@ interface Props {
   queued: boolean;
   elapsed: number | null;
   onReveal: (sectionId: string) => void;
+  /** h2 where the card is not the page's main subject (the landing page). */
+  heading?: "h1" | "h2";
+  /** Links into the evidence below the card; off where there is none. */
+  actions?: boolean;
 }
 
-export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onReveal }: Props) {
+export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onReveal, heading: Heading = "h1", actions = true }: Props) {
   const step: Step = live ? activeStep(r) : "done";
   const printing = (s: Step) => live && !queued && step === s;
   const [copied, setCopied] = useState(false);
@@ -71,9 +75,9 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
     <div className="receipt-wrap">
       <article className={`receipt ${live ? "receipt--live" : "receipt--static"}`} aria-labelledby="receipt-title" aria-busy={live}>
         <header className="receipt__head">
-          <h1 id="receipt-title" className="receipt__title">
+          <Heading id="receipt-title" className="receipt__title">
             Receipt
-          </h1>
+          </Heading>
           <p className="receipt__meta">
             {repo} · issue #{issueNumber(evidence.instance_id)}
             {pr ? ` · ${pr}` : ""}
@@ -197,21 +201,23 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
         {r.verdict && !live && (
           <>
             <p className={`strip strip--${verdictTone(r.verdict.verdict)}`}>{STRIP[r.verdict.verdict]}</p>
-            <div className="receipt__actions">
-              {wroteTest && (
-                <a href="#test" onClick={(e) => (e.preventDefault(), onReveal("test"))}>
-                  See the test
-                </a>
-              )}
-              {r.base.length > 0 && (
-                <a href="#runs" onClick={(e) => (e.preventDefault(), onReveal("runs"))}>
-                  Run output
-                </a>
-              )}
-              <button type="button" className="link-btn" onClick={copyLink}>
-                {copied ? "Link copied" : "Copy link"}
-              </button>
-            </div>
+            {actions && (
+              <div className="receipt__actions">
+                {wroteTest && (
+                  <a href="#test" onClick={(e) => (e.preventDefault(), onReveal("test"))}>
+                    See the test
+                  </a>
+                )}
+                {r.base.length > 0 && (
+                  <a href="#runs" onClick={(e) => (e.preventDefault(), onReveal("runs"))}>
+                    Run output
+                  </a>
+                )}
+                <button type="button" className="link-btn" onClick={copyLink}>
+                  {copied ? "Link copied" : "Copy link"}
+                </button>
+              </div>
+            )}
           </>
         )}
       </article>
