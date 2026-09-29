@@ -5,6 +5,14 @@ export function safeNext(next: string | null): string {
   return next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\") ? next : "/app";
 }
 
+/** Neon returns the browser to the API, which finishes sign-in and forwards to `next` (receipts/auth.py). */
+export function socialCallbacks(next: string, origin: string, apiUrl: string) {
+  return {
+    callbackURL: `${apiUrl}/api/auth/complete?next=${encodeURIComponent(origin + next)}`,
+    errorCallbackURL: `${origin}/signin?error=oauth`,
+  };
+}
+
 /** Neon's client throws this when an account must confirm its email before signing in. */
 export function needsEmailCode(err: unknown): boolean {
   return err instanceof Error && (err as Error & { code?: string }).code === "email_not_confirmed";

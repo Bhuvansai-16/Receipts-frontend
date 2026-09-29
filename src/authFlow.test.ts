@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { authErrorMessage, needsEmailCode, safeNext } from "./authFlow";
+import { authErrorMessage, needsEmailCode, safeNext, socialCallbacks } from "./authFlow";
 
 describe("safeNext", () => {
   it("keeps paths inside the app", () => {
@@ -36,5 +36,14 @@ describe("needsEmailCode", () => {
   it("is false for any other failure", () => {
     for (const err of [new Error("Invalid email or password"), { code: "email_not_confirmed" }, undefined])
       expect(needsEmailCode(err)).toBe(false);
+  });
+});
+
+describe("socialCallbacks", () => {
+  it("sends the browser back through the API's completion route to the requested page", () => {
+    expect(socialCallbacks("/app/repos", "http://localhost:5173", "http://localhost:8000")).toEqual({
+      callbackURL: "http://localhost:8000/api/auth/complete?next=http%3A%2F%2Flocalhost%3A5173%2Fapp%2Frepos",
+      errorCallbackURL: "http://localhost:5173/signin?error=oauth",
+    });
   });
 });
