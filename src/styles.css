@@ -745,6 +745,12 @@ select {
   font-family: var(--font);
   font-size: 14.5px;
   color: var(--ink-2);
+  /* long reasons (a pytest traceback) would stretch the receipt; the full text is in the evidence below */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
 }
 .total__meta {
   margin-top: 10px;

@@ -181,7 +181,11 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
               <span className="total__label">Verdict</span>
               {r.verdict ? <VerdictChip verdict={r.verdict.verdict} size="lg" /> : <Cursor />}
             </div>
-            {r.verdict && <p className="total__reason">{sentence(r.verdict.reason)}</p>}
+            {r.verdict && (
+              <p className="total__reason" title={sentence(r.verdict.reason)}>
+                {sentence(r.verdict.reason)}
+              </p>
+            )}
           </>
         )}
 
