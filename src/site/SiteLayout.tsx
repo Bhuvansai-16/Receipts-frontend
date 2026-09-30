@@ -147,6 +147,11 @@ function SiteFooter() {
             <h2>Built with</h2>
             <ul>
               <li>
+                <a href="https://nebius.com" target="_blank" rel="noreferrer">
+                  Nebius AI Cloud
+                </a>
+              </li>
+              <li>
                 <a href="https://nebius.com/token-factory" target="_blank" rel="noreferrer">
                   Nebius Token Factory
                 </a>
