@@ -6,17 +6,17 @@ import { VerdictChip } from "./VerdictChip";
 
 const POLL_MS = 5000;
 
-export function RecentRuns() {
+export function RecentRuns({ limit = 12 }: { limit?: number }) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [error, setError] = useState<string>();
 
   const load = useCallback(
     () =>
-      api.myRuns().then(
+      api.myRuns(limit).then(
         (page) => (setRuns(page.runs), setError(undefined)),
         (e: Error) => setError(e.message),
       ),
-    [],
+    [limit],
   );
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function RecentRuns() {
   );
 }
 
-function RunStatus({ run }: { run: RunSummary }) {
+export function RunStatus({ run }: { run: RunSummary }) {
   if (run.verdict) return <VerdictChip verdict={run.verdict} />;
   if (run.status === "error") return <span className="status">Failed to run</span>;
   return (

@@ -2,7 +2,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type InstanceDetail, type InstanceSummary, type PrKind } from "../api";
 import { IssuePicker } from "../components/IssuePicker";
-import { GitHubRepos } from "../components/GitHubRepos";
 import { RecentRuns } from "../components/RecentRuns";
 import { issueNumber } from "../receipt";
 
@@ -30,7 +29,7 @@ export function NewCheckPage() {
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    document.title = "Check a pull request · Receipts";
+    document.title = "Try a demo · Receipts";
   }, []);
 
   const loadInstances = () => {
@@ -73,11 +72,11 @@ export function NewCheckPage() {
     <div className="home">
       <section aria-labelledby="page-title">
         <h1 id="page-title" className="page-title">
-          Check a pull request
+          Try a demo
         </h1>
         <p className="lead">
-          Receipts writes the missing test from the issue alone, runs it on the code before and after the change, and
-          hands you the evidence.
+          Run a check on a real bug from SWE-bench Verified: pick an issue, then its real fix, a do-nothing pull
+          request or your own diff.
         </p>
 
         <form className="form" onSubmit={submit} noValidate>
@@ -193,7 +192,6 @@ export function NewCheckPage() {
 
       <aside className="home__recent">
         <RecentRuns />
-        <GitHubRepos />
       </aside>
     </div>
   );

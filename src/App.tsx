@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { AccountPage } from "./app/AccountPage";
+import { AppLayout } from "./app/AppLayout";
+import { Overview } from "./app/Overview";
+import { PullRequests } from "./app/PullRequests";
+import { ReceiptsPage } from "./app/ReceiptsPage";
+import { Repositories } from "./app/Repositories";
 import { AuthPage } from "./pages/AuthPage";
 import { NewCheckPage } from "./pages/NewCheck";
 import { RunPage } from "./pages/RunPage";
@@ -23,15 +29,22 @@ export function App() {
             <Route path="/signin" element={<AuthPage mode="signin" />} />
             <Route path="/signup" element={<AuthPage mode="signup" />} />
             <Route path="/runs/:runId" element={<RunPage />} />
-            <Route
-              path="/app"
-              element={
-                <RequireAuth>
-                  <NewCheckPage />
-                </RequireAuth>
-              }
-            />
             <Route path="*" element={<NotFound />} />
+          </Route>
+          <Route
+            path="/app"
+            element={
+              <RequireAuth>
+                <AppLayout />
+              </RequireAuth>
+            }
+          >
+            <Route index element={<Overview />} />
+            <Route path="repos" element={<Repositories />} />
+            <Route path="repos/:owner/:repo" element={<PullRequests />} />
+            <Route path="receipts" element={<ReceiptsPage />} />
+            <Route path="demo" element={<NewCheckPage />} />
+            <Route path="account" element={<AccountPage />} />
           </Route>
         </Routes>
       </SessionProvider>

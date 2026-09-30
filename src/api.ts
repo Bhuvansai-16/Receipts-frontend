@@ -33,19 +33,56 @@ export interface RunSummary {
   finished_at: string | null;
 }
 
-export interface GitHubRepo {
-  full_name: string;
-  url: string;
-  description: string | null;
-  private: boolean;
-  language: string | null;
-  stars: number;
-  pushed_at: string;
+export interface Usage {
+  active: number;
+  today: number;
+  max_active: number;
+  per_day: number;
 }
 
-export interface GitHubRepos {
-  connected: boolean;
-  repos: GitHubRepo[];
+export interface Me {
+  id: string;
+  email: string;
+  name: string | null;
+  image: string | null;
+  usage: Usage;
+}
+
+export interface Installation {
+  id: number;
+  account_login: string;
+  account_type: string;
+}
+
+export interface GitHubStatus {
+  app_configured: boolean;
+  github_linked: boolean;
+  install_url: string | null;
+  installations: Installation[];
+}
+
+export interface Repo {
+  id: number;
+  full_name: string;
+  private: boolean;
+  language: string | null;
+  description: string | null;
+  pushed_at: string | null;
+  url: string;
+  installation_id: number;
+  auto_check: boolean;
+}
+
+export interface PullSummary {
+  number: number;
+  title: string;
+  author: string | null;
+  url: string;
+  draft: boolean;
+  updated_at: string | null;
+  head_sha: string;
+  linked_issue: number | null;
+  latest: { id: string; status: RunStatus; verdict: Verdict | null } | null;
 }
 
 export interface ReceiptEvent {
@@ -127,20 +164,32 @@ async function json<T>(res: Response): Promise<T> {
 const enc = encodeURIComponent;
 // Credentials on every call: the session cookie belongs to the API's origin.
 const get = <T,>(path: string) => fetch(`${API_URL}${path}`, { credentials: "include" }).then(json<T>);
+const send = <T,>(method: "POST" | "PUT", path: string, body?: unknown) =>
+  fetch(`${API_URL}${path}`, {
+    method,
+    credentials: "include",
+    headers: body === undefined ? undefined : { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  }).then(json<T>);
 
 export const api = {
   instances: () => get<InstanceSummary[]>("/api/instances"),
   instance: (id: string) => get<InstanceDetail>(`/api/instances/${enc(id)}`),
-  myRuns: (limit = 12) => get<{ runs: RunSummary[]; next_cursor: string | null }>(`/api/runs?limit=${limit}`),
+  me: () => get<Me>("/api/me"),
+  myRuns: (limit = 12, cursor?: string) =>
+    get<{ runs: RunSummary[]; next_cursor: string | null }>(
+      `/api/runs?limit=${limit}${cursor ? `&cursor=${enc(cursor)}` : ""}`,
+    ),
   run: (id: string) => get<RunResponse>(`/api/runs/${enc(id)}`),
-  githubRepos: () => get<GitHubRepos>("/api/github/repos"),
-  start: (body: { instance_id: string; pr: PrKind; diff?: string }) =>
-    fetch(`${API_URL}/api/runs`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }).then(json<{ run_id: string }>),
+  githubStatus: () => get<GitHubStatus>("/api/github/status"),
+  syncInstallations: () => send<{ installations: Installation[] }>("POST", "/api/github/installations/sync"),
+  repos: () => get<{ repos: Repo[] }>("/api/github/repos"),
+  setAutoCheck: (repoId: number, enabled: boolean) =>
+    send<{ auto_check: boolean }>("PUT", `/api/github/repos/${repoId}/auto-check`, { enabled }),
+  pulls: (fullName: string) => get<{ repo: Repo; pulls: PullSummary[] }>(`/api/github/repos/${fullName}/pulls`),
+  checkPull: (fullName: string, number: number) =>
+    send<{ run_id: string }>("POST", `/api/github/repos/${fullName}/pulls/${number}/check`),
+  start: (body: { instance_id: string; pr: PrKind; diff?: string }) => send<{ run_id: string }>("POST", "/api/runs", body),
 };
 
 const EVENT_TYPES = [

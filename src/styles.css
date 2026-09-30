@@ -150,11 +150,6 @@ select {
   border-radius: 50%;
   background: var(--honey);
 }
-.topnav {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
 
 .main {
   padding-block: 48px 96px;
@@ -1063,31 +1058,12 @@ select {
   margin-top: 18px;
   text-align: center;
 }
-.nav-user {
-  font-size: 14px;
-  color: var(--ink-2);
-  max-width: 22ch;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 @media (max-width: 560px) {
-  .nav-user {
-    display: none;
-  }
   .auth-card {
     padding: 20px;
   }
 }
 
-/* ---------- GitHub repositories (under your receipts) ---------- */
-
-.repos {
-  margin-top: 48px;
-}
-.repos__note {
-  margin-top: 12px;
-}
 .input--code {
   font-family: var(--mono);
   font-size: 22px;
