@@ -17,10 +17,14 @@ export function Repositories() {
 
   const load = useCallback(async () => {
     setError(undefined);
+    // Both at once: each is a GitHub round trip. The repo list only counts once status says it can exist.
+    const pending = api.repos().then((r) => r.repos, (e: Error) => e);
     try {
       const s = await api.githubStatus();
       setStatus(s);
-      setRepos(s.app_configured && s.installations.length ? (await api.repos()).repos : []);
+      const listed = s.app_configured && s.installations.length ? await pending : [];
+      if (listed instanceof Error) throw listed;
+      setRepos(listed);
     } catch (e) {
       setError((e as Error).message);
       setRepos([]);

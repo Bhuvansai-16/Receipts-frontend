@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Evidence, ReceiptEvent } from "./api";
-import { activeStep, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, timeAgo } from "./receipt";
+import type { RunSummary } from "./api";
+import { activeStep, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, runLabel, timeAgo } from "./receipt";
 
 const e = (type: string, data: Record<string, unknown> = {}): ReceiptEvent => ({ type, data });
 const fail = (msg: string) => ({ tests: 1, not_passed: { "t.py::t": { outcome: "failed", exc: "AssertionError", msg } }, output_tail: "out" });
@@ -150,5 +151,21 @@ describe("receiptTitle", () => {
   it("names the issue and the kind of PR for SWE-bench runs", () => {
     const ev = { instance_id: "psf__requests-1142", pr: "gold" } as Evidence;
     expect(receiptTitle(ev)).toEqual({ repo: "psf/requests", label: "issue #1142", pr: "Real fix", url: null });
+  });
+});
+
+describe("runLabel", () => {
+  const run = (extra: Partial<RunSummary>) =>
+    ({ id: "r", instance_id: "psf__requests-1142", pr: "gold", status: "done", verdict: null, reason: null,
+       seconds: null, tokens: null, started_at: "", finished_at: null, ...extra }) as RunSummary;
+
+  it("names a pull request check by its repository and number", () => {
+    expect(runLabel(run({ instance_id: "LaZy-Wolf/receipts-demo-sympy#29", pr: "github",
+                          repo: "LaZy-Wolf/receipts-demo-sympy", pr_number: 29 })))
+      .toEqual({ title: "receipts-demo-sympy #29", full: "LaZy-Wolf/receipts-demo-sympy #29" });
+  });
+
+  it("keeps the instance id for demo checks", () => {
+    expect(runLabel(run({}))).toEqual({ title: "psf__requests-1142", full: "psf__requests-1142" });
   });
 });

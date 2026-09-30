@@ -1,7 +1,7 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, type GitHubStatus, type Me } from "../api";
+import { api, type GitHubStatus, type Me, type Repo } from "../api";
 import { authErrorMessage } from "../authFlow";
 import { RecentRuns } from "../components/RecentRuns";
 import { checklist, nextStep, type StepId } from "./checklist";
@@ -31,6 +31,7 @@ export function Overview() {
     ? checklist({ githubLinked: status.github_linked, installations: status.installations.length, prChecks })
     : null;
   const next = steps ? nextStep(steps) : null;
+  const setUp = steps !== null && next === null;
   const firstName = me?.name?.split(" ")[0] || me?.email?.split("@")[0];
 
   async function connect() {
@@ -71,7 +72,18 @@ export function Overview() {
       <header className="app-page__head">
         <h1 className="page-title">{firstName ? `Welcome, ${firstName}` : "Welcome"}</h1>
         <p className="lead">
-          {next ? "Three steps to your first receipt on a real pull request." : "You're set up. Here's what's happening."}
+          {steps === null ? (
+            "\u00a0" // keeps the line's height while GitHub status loads, without flashing the wrong copy
+          ) : !setUp ? (
+            "Three steps to your first receipt on a real pull request."
+          ) : me ? (
+            <>
+              You're set up. <strong>{Math.max(0, me.usage.per_day - me.usage.today)}</strong> of {me.usage.per_day}{" "}
+              checks left today.
+            </>
+          ) : (
+            "You're set up."
+          )}
         </p>
       </header>
 
@@ -82,45 +94,56 @@ export function Overview() {
       )}
 
       <div className="overview">
-        <section aria-labelledby="setup-title" className="panel">
-          <div className="panel__head">
-            <h2 id="setup-title" className="panel__title">
-              Get set up
-            </h2>
-            {me && (
-              <p className="usage">
-                <strong>{Math.max(0, me.usage.per_day - me.usage.today)}</strong> of {me.usage.per_day} checks left today
-              </p>
-            )}
-          </div>
-          {!steps ? (
-            <div aria-hidden="true">
-              {[70, 60, 66].map((w) => (
-                <span key={w} className="skeleton" style={{ width: `${w}%`, margin: "18px 0" }} />
-              ))}
+        {setUp ? (
+          <section className="panel">
+            <RecentRuns limit={8} />
+            <Link to="/app/receipts" className="text-link">
+              All receipts
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </section>
+        ) : (
+          <section aria-labelledby="setup-title" className="panel">
+            <div className="panel__head">
+              <h2 id="setup-title" className="panel__title">
+                Get set up
+              </h2>
+              {me && (
+                <p className="usage">
+                  <strong>{Math.max(0, me.usage.per_day - me.usage.today)}</strong> of {me.usage.per_day} checks left today
+                </p>
+              )}
             </div>
-          ) : (
-            <ol className="checklist">
-              {steps.map((s, i) => (
-                <li key={s.id} className={`checklist__item${s.done ? " is-done" : ""}${s.id === next ? " is-next" : ""}`}>
-                  <span className="checklist__mark" aria-hidden="true">
-                    {s.done ? <Check size={16} strokeWidth={3} /> : i + 1}
-                  </span>
-                  <div className="checklist__body">
-                    <h3>
-                      {COPY[s.id].title}
-                      {s.done && <span className="visually-hidden"> (done)</span>}
-                    </h3>
-                    <p>{COPY[s.id].text}</p>
-                  </div>
-                  {!s.done && <div className="checklist__action">{action(s.id, s.id === next)}</div>}
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
+            {!steps ? (
+              <div aria-hidden="true">
+                {[70, 60, 66].map((w) => (
+                  <span key={w} className="skeleton" style={{ width: `${w}%`, margin: "18px 0" }} />
+                ))}
+              </div>
+            ) : (
+              <ol className="checklist">
+                {steps.map((s, i) => (
+                  <li key={s.id} className={`checklist__item${s.done ? " is-done" : ""}${s.id === next ? " is-next" : ""}`}>
+                    <span className="checklist__mark" aria-hidden="true">
+                      {s.done ? <Check size={16} strokeWidth={3} /> : i + 1}
+                    </span>
+                    <div className="checklist__body">
+                      <h3>
+                        {COPY[s.id].title}
+                        {s.done && <span className="visually-hidden"> (done)</span>}
+                      </h3>
+                      <p>{COPY[s.id].text}</p>
+                    </div>
+                    {!s.done && <div className="checklist__action">{action(s.id, s.id === next)}</div>}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        )}
 
         <aside className="overview__side">
+          {setUp && <RepoShortcuts />}
           <section className="panel panel--tint" aria-labelledby="demo-title">
             <h2 id="demo-title" className="panel__title">
               No repository handy?
@@ -131,15 +154,61 @@ export function Overview() {
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </section>
-          <section className="panel">
-            <RecentRuns limit={5} />
-            <Link to="/app/receipts" className="text-link">
-              All receipts
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </section>
+          {!setUp && (
+            <section className="panel">
+              <RecentRuns limit={5} />
+              <Link to="/app/receipts" className="text-link">
+                All receipts
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </section>
+          )}
         </aside>
       </div>
     </div>
+  );
+}
+
+/** Once set up, the quickest way back to a repository's pull requests. */
+function RepoShortcuts() {
+  const [repos, setRepos] = useState<Repo[] | null>(null);
+
+  useEffect(() => {
+    api.repos().then((r) => setRepos(r.repos), () => setRepos([]));
+  }, []);
+
+  return (
+    <section className="panel" aria-labelledby="repos-title">
+      <h2 id="repos-title" className="panel__title">
+        Your repositories
+      </h2>
+      {repos === null ? (
+        <div aria-hidden="true" style={{ marginTop: 18 }}>
+          {[70, 56].map((w) => (
+            <span key={w} className="skeleton" style={{ width: `${w}%` }} />
+          ))}
+        </div>
+      ) : repos.length === 0 ? (
+        <p className="empty">GitHub didn't list any repositories. Refresh on the Repositories page.</p>
+      ) : (
+        <ol className="runs">
+          {repos.slice(0, 5).map((repo) => (
+            <li key={repo.id}>
+              <Link to={`/app/repos/${repo.full_name}`} className="run-row">
+                <span className="run-row__id">{repo.full_name}</span>
+                <span className="run-row__meta">{repo.auto_check ? "Auto-check on" : "Check pull requests by hand"}</span>
+                <span className="run-row__status">
+                  <ChevronRight size={18} aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+      <Link to="/app/repos" className="text-link">
+        {repos && repos.length > 5 ? `All ${repos.length} repositories` : "Manage repositories"}
+        <ArrowRight size={16} aria-hidden="true" />
+      </Link>
+    </section>
   );
 }

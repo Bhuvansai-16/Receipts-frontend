@@ -1,5 +1,5 @@
 // The receipt model: one shape built either from live events or from saved evidence.
-import type { Evidence, ReceiptEvent, RunSummaryRaw, Verdict } from "./api";
+import type { Evidence, ReceiptEvent, RunSummary, RunSummaryRaw, Verdict } from "./api";
 
 export interface Tile {
   passed: boolean;
@@ -149,6 +149,13 @@ export function issueNumber(instanceId: string): string {
 /** SWE-bench ids are <owner>__<repo>-<number>. */
 export function repoOf(instanceId: string): string {
   return instanceId.slice(0, instanceId.lastIndexOf("-")).replace("__", "/");
+}
+
+/** A row in a list of checks: "repo #29" for pull requests, the instance id for demos. */
+export function runLabel(run: RunSummary): { title: string; full: string } {
+  if (run.repo && run.pr_number != null)
+    return { title: `${run.repo.split("/").pop()} #${run.pr_number}`, full: `${run.repo} #${run.pr_number}` };
+  return { title: run.instance_id, full: run.instance_id };
 }
 
 export const PR_LABEL: Record<string, string> = {

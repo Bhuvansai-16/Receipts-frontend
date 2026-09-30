@@ -151,6 +151,9 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
           <Line
             label="With the PR, must pass"
             value={r.patchApplied ? <Tiles tiles={r.pr} mustPass pending={live} /> : "patch did not apply"}
+            note={r.pr.find((t) => !t.passed)?.message || undefined}
+            mono
+            clamp
           />
         )}
 

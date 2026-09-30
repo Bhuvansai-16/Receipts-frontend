@@ -31,6 +31,8 @@ export interface RunSummary {
   tokens: number | null;
   started_at: string;
   finished_at: string | null;
+  repo?: string | null;
+  pr_number?: number | null;
 }
 
 export interface Usage {

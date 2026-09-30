@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type RunSummary } from "../api";
-import { PR_LABEL, timeAgo } from "../receipt";
+import { PR_LABEL, runLabel, timeAgo } from "../receipt";
 import { VerdictChip } from "./VerdictChip";
 
 const POLL_MS = 5000;
@@ -60,7 +60,9 @@ export function RecentRuns({ limit = 12 }: { limit?: number }) {
           {runs.map((run) => (
             <li key={run.id}>
               <Link to={`/app/runs/${encodeURIComponent(run.id)}`} className="run-row">
-                <span className="run-row__id">{run.instance_id}</span>
+                <span className="run-row__id" title={runLabel(run).full}>
+                  {runLabel(run).title}
+                </span>
                 <span className="run-row__meta">
                   {PR_LABEL[run.pr] ?? run.pr} · {timeAgo(run.started_at)}
                 </span>

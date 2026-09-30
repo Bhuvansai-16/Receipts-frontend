@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type RunSummary } from "../api";
 import { RunStatus } from "../components/RecentRuns";
-import { PR_LABEL, timeAgo } from "../receipt";
+import { PR_LABEL, runLabel, timeAgo } from "../receipt";
 
 const PAGE = 20;
 
@@ -66,7 +66,7 @@ export function ReceiptsPage() {
             {runs.map((run) => (
               <li key={run.id}>
                 <Link to={`/app/runs/${encodeURIComponent(run.id)}`} className="run-row">
-                  <span className="run-row__id">{run.instance_id}</span>
+                  <span className="run-row__id">{runLabel(run).full}</span>
                   <span className="run-row__meta">
                     {PR_LABEL[run.pr] ?? run.pr} · {timeAgo(run.started_at)}
                   </span>
