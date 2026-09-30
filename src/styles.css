@@ -150,6 +150,20 @@ select {
   border-radius: 50%;
   background: var(--honey);
 }
+/* signing in can take a few seconds (a round trip to Neon Auth): a calm, centered wait, not a bare line */
+.session-wait {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  background: var(--bg);
+}
+.session-wait .pulse {
+  width: 11px;
+  height: 11px;
+}
 
 .main {
   padding-block: 48px 96px;

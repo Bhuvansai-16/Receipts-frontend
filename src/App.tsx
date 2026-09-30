@@ -59,9 +59,13 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   const location = useLocation();
   if (loading)
     return (
-      <p className="hint" aria-busy="true">
-        Checking your session…
-      </p>
+      <div className="session-wait" aria-busy="true">
+        <span className="brand">
+          <span className="brand__dot pulse" aria-hidden="true" />
+          Receipts
+        </span>
+        <p className="hint">Checking your session…</p>
+      </div>
     );
   if (!user) return <Navigate to={`/signin?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   return <>{children}</>;
