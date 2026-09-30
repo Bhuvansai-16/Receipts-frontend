@@ -7,10 +7,14 @@ export function safeNext(next: string | null): string {
 
 /** Neon returns the browser to the API, which finishes sign-in and forwards to `next` (receipts/auth.py). */
 export function socialCallbacks(next: string, origin: string, apiUrl: string) {
-  return {
-    callbackURL: `${apiUrl}/api/auth/complete?next=${encodeURIComponent(origin + next)}`,
-    errorCallbackURL: `${origin}/signin?error=oauth`,
-  };
+  const back = `${apiUrl}/api/auth/complete?next=${encodeURIComponent(origin + next)}`;
+  // New accounts get newUserCallbackURL; without it Neon sends them to the site's home page instead.
+  return { callbackURL: back, newUserCallbackURL: back, errorCallbackURL: `${origin}/signin?error=oauth` };
+}
+
+/** True when Neon sent the browser to a page with its one-time sign-in code (the client exchanges it). */
+export function returnedFromSocialSignIn(search: string): boolean {
+  return new URLSearchParams(search).has("neon_auth_session_verifier");
 }
 
 /** Neon's client throws this when an account must confirm its email before signing in. */

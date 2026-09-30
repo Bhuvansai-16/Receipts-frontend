@@ -1,6 +1,7 @@
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { returnedFromSocialSignIn } from "../authFlow";
 import { useRouteFocus } from "../components/useRouteFocus";
 import { useSession } from "../session";
 import "./site.css";
@@ -14,11 +15,17 @@ const LINKS = [
 export function SiteLayout() {
   const main = useRef<HTMLElement>(null);
   useRouteFocus(main);
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const { user, loading } = useSession();
 
   useEffect(() => setOpen(false), [pathname]);
+
+  // Signed in by a social provider that landed on a public page: go straight to the app.
+  useEffect(() => {
+    if (user && returnedFromSocialSignIn(search)) navigate("/app", { replace: true });
+  }, [user, search, navigate]);
 
   const account = loading ? null : user ? (
     <Link to="/app" className="btn btn--primary btn--sm">
