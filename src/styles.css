@@ -1052,36 +1052,94 @@ select {
   }
 }
 
-/* ---------- sign in / sign up ---------- */
+/* ---------- sign in / sign up: the form on the left, the product at work on the right ---------- */
 
-.auth {
-  max-width: 420px;
-  margin: 8px auto 0;
-}
-.auth-card {
-  margin-top: 28px;
-  padding: 28px;
-  border: 1px solid var(--hair);
-  border-radius: var(--radius-lg);
+.authsplit {
   display: grid;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
 }
-.form--tight {
-  margin-top: 0;
-  gap: 18px;
+.authsplit__main {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 32px;
+  outline: none;
 }
-.divider {
+.authsplit__col {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+}
+.authsplit__brand {
+  margin-bottom: 22px;
+}
+.authsplit__title {
+  font-size: clamp(34px, 3.4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+.authsplit__lead {
+  margin-top: 12px;
+  font-size: 17px;
+  color: var(--ink-2);
+}
+.authsplit__social {
+  margin-top: 26px;
+  display: grid;
+  gap: 12px;
+}
+.authsplit__or {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  margin: 20px 0;
   font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--ink-3);
 }
-.divider::before,
-.divider::after {
+.authsplit__or::before,
+.authsplit__or::after {
   content: "";
   flex: 1;
   border-top: 1px solid var(--hair);
+}
+.authsplit__form {
+  display: grid;
+  gap: 14px;
+}
+.authsplit__form .field {
+  gap: 6px;
+}
+.authsplit__form .btn--primary {
+  margin-top: 6px;
+}
+.authsplit__switch {
+  margin-top: 20px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.authsplit__switch a {
+  color: var(--ink);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.authsplit__fine {
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+.authsplit__fine a {
+  color: var(--ink-2);
+  text-underline-offset: 3px;
+}
+.btn--tall {
+  min-height: 52px;
+  font-size: 16px;
 }
 .btn--block {
   width: 100%;
@@ -1093,13 +1151,210 @@ select {
 .btn--github:hover:not(:disabled) {
   background: var(--surface);
 }
-.auth-switch {
-  margin-top: 18px;
-  text-align: center;
+
+/* an input with a leading icon (and an optional show/hide button at the end) */
+.input-icon {
+  position: relative;
 }
-@media (max-width: 560px) {
-  .auth-card {
-    padding: 20px;
+.input-icon > svg {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.input-icon .input {
+  min-height: 48px;
+  padding-left: 44px;
+}
+.input-icon .input--toggle {
+  padding-right: 52px;
+}
+.input-icon__toggle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+.input-icon__toggle:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+/* the right half: an espresso panel with honey clay shapes and the product's own cards */
+.showcase {
+  position: sticky;
+  top: 12px;
+  align-self: start;
+  height: calc(100vh - 24px);
+  height: calc(100dvh - 24px);
+  margin: 12px;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(80% 60% at 18% 0%, oklch(0.4 0.07 62 / 0.85), transparent 62%),
+    oklch(0.21 0.02 62);
+}
+.showcase__blob {
+  position: absolute;
+  filter: drop-shadow(0 28px 36px oklch(0 0 0 / 0.38));
+}
+.showcase__blob--a {
+  width: 360px;
+  left: -96px;
+  top: -84px;
+}
+.showcase__blob--b {
+  width: 400px;
+  right: -130px;
+  top: 20%;
+}
+.showcase__card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 300px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 14px;
+  background: oklch(1 0 0 / 0.94);
+  box-shadow: 0 18px 40px oklch(0 0 0 / 0.3);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.showcase__card strong {
+  display: block;
+  font-weight: 650;
+}
+.showcase__card small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+.showcase__card--1 {
+  top: 15%;
+  right: 12%;
+}
+.showcase__card--2 {
+  top: 26%;
+  left: 12%;
+}
+.showcase__card--3 {
+  top: 37%;
+  right: 7%;
+}
+.showcase__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: oklch(0.955 0.035 78);
+  color: var(--honey-ink);
+}
+.showcase__icon--ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.showcase__table {
+  position: absolute;
+  left: 12%;
+  right: -3%;
+  bottom: -4%;
+  padding: 20px 0 28px 24px;
+  border-radius: 18px 0 0 0;
+  background: #fff;
+  box-shadow: 0 -12px 50px oklch(0 0 0 / 0.32);
+}
+.showcase__table-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 40px;
+}
+.showcase__table-head strong {
+  font-size: 17px;
+  font-weight: 650;
+}
+.showcase__table-head small {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.showcase__table table {
+  width: 100%;
+  margin-top: 14px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.showcase__table th {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--hair);
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+.showcase__table td {
+  max-width: 230px;
+  padding: 11px 12px 11px 0;
+  border-bottom: 1px solid var(--hair);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.showcase__mono {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+@media (max-height: 760px) {
+  .showcase__card--3 {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .showcase__card,
+  .showcase__table {
+    animation: showcase-in 700ms var(--ease-out) both;
+  }
+  .showcase__card--2 {
+    animation-delay: 90ms;
+  }
+  .showcase__card--3 {
+    animation-delay: 180ms;
+  }
+  .showcase__table {
+    animation-delay: 240ms;
+  }
+  @keyframes showcase-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+}
+@media (max-width: 960px) {
+  .authsplit {
+    grid-template-columns: 1fr;
+  }
+  .showcase {
+    display: none;
+  }
+  .authsplit__main {
+    padding: 28px 20px 40px;
   }
 }
 

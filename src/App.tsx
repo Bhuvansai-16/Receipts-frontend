@@ -27,11 +27,11 @@ export function App() {
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             <Route path="/security" element={<SecurityPage />} />
             <Route path="/docs" element={<DocsPage />} />
-            <Route path="/signin" element={<AuthPage mode="signin" />} />
-            <Route path="/signup" element={<AuthPage mode="signup" />} />
             <Route path="/runs/:runId" element={<RunPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="/signin" element={<AuthPage mode="signin" />} />
+          <Route path="/signup" element={<AuthPage mode="signup" />} />
           <Route
             path="/app"
             element={
