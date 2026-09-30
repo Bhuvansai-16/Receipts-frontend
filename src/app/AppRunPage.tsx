@@ -159,12 +159,12 @@ export function AppRunPage() {
           {live ? (
             <button type="button" className="btn btn--quiet btn--sm btn--danger" onClick={stop} disabled={busy}>
               <Square size={13} aria-hidden="true" />
-              Stop
+              {busy ? "Stopping…" : "Stop"}
             </button>
           ) : (
             <button type="button" className="btn btn--primary btn--sm" onClick={checkAgain} disabled={busy}>
               <RotateCcw size={14} aria-hidden="true" />
-              {source ? "Check again" : "Run another"}
+              {busy ? "Starting…" : source ? "Check again" : "Run another"}
             </button>
           )}
         </div>
