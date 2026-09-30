@@ -1,9 +1,11 @@
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api, type Usage } from "../api";
 import { authErrorMessage } from "../authFlow";
 import { loadAuth, useSession } from "../session";
 import { connectGitHub } from "./github";
+import { Avatar, displayName } from "./ProfileMenu";
 
 const PROVIDERS: { id: string; label: string }[] = [
   { id: "github", label: "GitHub" },
@@ -15,10 +17,12 @@ export function AccountPage() {
   const { user, signOut } = useSession();
   const navigate = useNavigate();
   const [linked, setLinked] = useState<Set<string> | null>(null);
+  const [usage, setUsage] = useState<Usage | null>(null);
   const [error, setError] = useState<string>();
 
   useEffect(() => {
     document.title = "Account · Receipts";
+    api.me().then((me) => setUsage(me.usage), () => undefined);
     loadAuth()
       .then((auth) => auth.listAccounts())
       .then(({ data }) => setLinked(new Set((data ?? []).map((a: { providerId: string }) => a.providerId))))
@@ -37,13 +41,46 @@ export function AccountPage() {
     <div className="app-page">
       <header className="app-page__head">
         <h1 className="page-title">Account</h1>
-        <p className="lead">{user?.email}</p>
+        <p className="lead">Your profile, today's checks, and how you sign in.</p>
       </header>
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
       )}
+      <section className="panel profile-card" aria-labelledby="profile-title">
+        <Avatar user={user} size={56} />
+        <div>
+          <h2 id="profile-title" className="panel__title">
+            {displayName(user)}
+          </h2>
+          <p>{user?.email}</p>
+        </div>
+      </section>
+      <section className="panel" aria-labelledby="usage-title">
+        <h2 id="usage-title" className="panel__title">
+          Usage
+        </h2>
+        {usage ? (
+          <dl className="usage-grid">
+            <div>
+              <dt>Checks left today</dt>
+              <dd>
+                {Math.max(0, usage.per_day - usage.today)} <span>of {usage.per_day}</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Running now</dt>
+              <dd>
+                {usage.active} <span>of {usage.max_active} at a time</span>
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <span className="skeleton" style={{ width: "50%", margin: "18px 0 4px" }} aria-hidden="true" />
+        )}
+        <p className="hint usage-note">The daily count covers the last 24 hours, so it frees up as older checks age out.</p>
+      </section>
       <section className="panel" aria-labelledby="accounts-title">
         <h2 id="accounts-title" className="panel__title">
           Ways to sign in

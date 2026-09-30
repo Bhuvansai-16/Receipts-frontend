@@ -47,6 +47,7 @@ export function App() {
             <Route path="runs/:runId" element={<AppRunPage />} />
             <Route path="demo" element={<NewCheckPage />} />
             <Route path="account" element={<AccountPage />} />
+            <Route path="*" element={<AppNotFound />} />
           </Route>
         </Routes>
       </SessionProvider>
@@ -79,6 +80,22 @@ function NotFound() {
       <Link to="/" className="btn btn--primary">
         Go to the home page
       </Link>
+    </div>
+  );
+}
+
+function AppNotFound() {
+  return (
+    <div className="app-page">
+      <div className="empty-state">
+        <h1 className="page-title">We couldn't find that page</h1>
+        <p>The link may be old, or the page moved.</p>
+        <div className="empty-state__actions">
+          <Link to="/app" className="btn btn--primary">
+            Go to Overview
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

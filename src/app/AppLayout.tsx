@@ -1,23 +1,21 @@
-import { CircleUserRound, FlaskConical, FolderGit2, LayoutDashboard, LogOut, ReceiptText } from "lucide-react";
+import { FlaskConical, FolderGit2, LayoutDashboard, ReceiptText } from "lucide-react";
 import { useRef } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useRouteFocus } from "../components/useRouteFocus";
-import { useSession } from "../session";
 import "./app.css";
+import { ProfileMenu } from "./ProfileMenu";
 
+// Account lives in the profile menu at the foot of the sidebar (the last tab on phones).
 const NAV = [
   { to: "/app", label: "Overview", Icon: LayoutDashboard, end: true },
   { to: "/app/repos", label: "Repositories", Icon: FolderGit2, end: false },
   { to: "/app/receipts", label: "Receipts", Icon: ReceiptText, end: false },
   { to: "/app/demo", label: "Try a demo", Icon: FlaskConical, end: false },
-  { to: "/app/account", label: "Account", Icon: CircleUserRound, end: false },
 ];
 
 export function AppLayout() {
   const main = useRef<HTMLElement>(null);
   useRouteFocus(main);
-  const { user, signOut } = useSession();
-  const navigate = useNavigate();
 
   return (
     <div className="appshell">
@@ -41,15 +39,7 @@ export function AppLayout() {
             ))}
           </ul>
         </nav>
-        <div className="appshell__user">
-          <span className="appshell__email" title={user?.email}>
-            {user?.email}
-          </span>
-          <button type="button" className="link-btn appshell__signout" onClick={() => signOut().then(() => navigate("/"))}>
-            <LogOut size={16} aria-hidden="true" />
-            Sign out
-          </button>
-        </div>
+        <ProfileMenu />
       </aside>
       <main id="content" ref={main} tabIndex={-1} className="appshell__main">
         <Outlet />
