@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AccountPage } from "./app/AccountPage";
 import { AppLayout } from "./app/AppLayout";
+import { AppRunPage } from "./app/AppRunPage";
 import { Overview } from "./app/Overview";
 import { PullRequests } from "./app/PullRequests";
 import { ReceiptsPage } from "./app/ReceiptsPage";
@@ -43,6 +44,7 @@ export function App() {
             <Route path="repos" element={<Repositories />} />
             <Route path="repos/:owner/:repo" element={<PullRequests />} />
             <Route path="receipts" element={<ReceiptsPage />} />
+            <Route path="runs/:runId" element={<AppRunPage />} />
             <Route path="demo" element={<NewCheckPage />} />
             <Route path="account" element={<AccountPage />} />
           </Route>

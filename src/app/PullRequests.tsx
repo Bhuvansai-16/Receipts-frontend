@@ -22,12 +22,22 @@ export function PullRequests() {
     );
   }, [fullName]);
 
+  // While a check is running on any PR here, refresh the list so its verdict appears without a reload.
+  const running = pulls?.some((p) => p.latest?.status === "queued" || p.latest?.status === "running") ?? false;
+  useEffect(() => {
+    if (!running) return;
+    const timer = setInterval(() => {
+      if (!document.hidden) api.pulls(fullName).then((r) => setPulls(r.pulls), () => undefined);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [running, fullName]);
+
   async function check(pr: PullSummary) {
     setStarting(pr.number);
     setError(undefined);
     try {
       const { run_id } = await api.checkPull(fullName, pr.number);
-      navigate(`/runs/${encodeURIComponent(run_id)}`);
+      navigate(`/app/runs/${encodeURIComponent(run_id)}`);
     } catch (e) {
       setError((e as Error).message);
       setStarting(null);
@@ -95,7 +105,7 @@ export function PullRequests() {
                 </div>
                 <div className="pr__side">
                   {pr.latest && (
-                    <Link to={`/runs/${encodeURIComponent(pr.latest.id)}`} className="pr__latest">
+                    <Link to={`/app/runs/${encodeURIComponent(pr.latest.id)}`} className="pr__latest">
                       {pr.latest.verdict ? (
                         <VerdictChip verdict={pr.latest.verdict} />
                       ) : (
@@ -107,7 +117,7 @@ export function PullRequests() {
                     </Link>
                   )}
                   {running ? (
-                    <Link to={`/runs/${encodeURIComponent(pr.latest!.id)}`} className="btn btn--quiet btn--sm">
+                    <Link to={`/app/runs/${encodeURIComponent(pr.latest!.id)}`} className="btn btn--quiet btn--sm">
                       Watch it run
                     </Link>
                   ) : (

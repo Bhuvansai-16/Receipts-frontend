@@ -480,3 +480,255 @@
     padding: 22px 20px;
   }
 }
+
+/* ---------- a check, inside the app ---------- */
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.crumbs a {
+  color: var(--ink-2);
+  font-weight: 500;
+  text-decoration: none;
+}
+.crumbs a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.crumbs [aria-current] {
+  color: var(--ink);
+  font-weight: 600;
+}
+.runpage {
+  max-width: 1120px;
+}
+.runpage__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 24px;
+}
+.runpage__title {
+  min-width: 0;
+  flex: 1 1 360px;
+}
+.runpage__title .page-title {
+  font-size: 28px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.runpage__meta {
+  margin-top: 6px;
+  color: var(--ink-3);
+  font-size: 14.5px;
+}
+.runpage__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.status--live {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--ink);
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .status--live .pulse,
+  .steps-list__item.is-active .steps-list__icon svg {
+    animation: breathe 1.4s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    50% {
+      opacity: 0.35;
+    }
+  }
+}
+.btn--danger {
+  color: var(--bad);
+}
+.runpage__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.runpage__grid .receipt-wrap {
+  max-width: none;
+}
+.runpage__side {
+  display: grid;
+  gap: 20px;
+}
+.runpage > .evidence,
+.runpage > details,
+.runpage > section:last-child {
+  margin-top: 40px;
+}
+
+.explain {
+  padding: 24px 26px;
+  border-radius: 22px;
+  border: 1px solid transparent;
+}
+.explain--ok {
+  background: var(--ok-bg);
+  border-color: oklch(0.85 0.07 150);
+}
+.explain--bad {
+  background: var(--bad-bg);
+  border-color: oklch(0.86 0.06 27);
+}
+.explain--rust {
+  background: var(--rust-bg);
+  border-color: oklch(0.86 0.06 55);
+}
+.explain--neutral {
+  background: var(--surface);
+  border-color: var(--hair);
+}
+.explain__title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.explain p {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+.explain__detail {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--hair);
+  font-family: var(--mono);
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.explain .explain__next {
+  color: var(--ink);
+  font-weight: 600;
+}
+.explain .explain__meta {
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+.progress__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.progress__count {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.progress__bar {
+  margin-top: 14px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.progress__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ink);
+  transition: width 400ms var(--ease-out);
+}
+.progress__now {
+  margin-top: 10px;
+  font-weight: 600;
+}
+.progress__now span {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.steps-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.steps-list__item {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+.steps-list__item.is-active {
+  background: var(--tint);
+}
+.steps-list__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink-3);
+}
+.is-done .steps-list__icon {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.is-active .steps-list__icon {
+  background: var(--ink);
+  color: #fff;
+}
+.is-failed .steps-list__icon {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+.steps-list__label {
+  font-size: 14.5px;
+  font-weight: 500;
+}
+.is-waiting .steps-list__label,
+.is-skipped .steps-list__label {
+  color: var(--ink-3);
+}
+.steps-list__detail {
+  font-size: 13px;
+  color: var(--ink-3);
+  text-align: right;
+}
+.progress__note {
+  margin-top: 14px;
+}
+.run__app-link {
+  margin: 0;
+}
+
+@media (max-width: 1080px) {
+  .runpage__grid {
+    grid-template-columns: 1fr;
+  }
+  .runpage__grid .receipt-wrap {
+    max-width: 480px;
+  }
+  .runpage__side {
+    order: -1;
+  }
+}

@@ -130,7 +130,14 @@ export interface Evidence {
   seconds?: number;
   tokens?: Record<string, { total_tokens?: number }> | null;
   events?: ReceiptEvent[];
-  source?: { repo: string; pr_number: number; head_sha: string; url?: string };
+  source?: {
+    repo: string;
+    pr_number: number;
+    head_sha: string;
+    url?: string;
+    title?: string | null;
+    linked_issue?: number | null;
+  };
 }
 
 export interface RunResponse {
@@ -181,6 +188,7 @@ export const api = {
       `/api/runs?limit=${limit}${cursor ? `&cursor=${enc(cursor)}` : ""}`,
     ),
   run: (id: string) => get<RunResponse>(`/api/runs/${enc(id)}`),
+  cancelRun: (id: string) => send<{ ok: boolean }>("POST", `/api/runs/${enc(id)}/cancel`),
   githubStatus: () => get<GitHubStatus>("/api/github/status"),
   syncInstallations: () => send<{ installations: Installation[] }>("POST", "/api/github/installations/sync"),
   repos: () => get<{ repos: Repo[] }>("/api/github/repos"),

@@ -61,7 +61,7 @@ export function NewCheckPage() {
     setBusy(true);
     try {
       const { run_id } = await api.start({ instance_id: instanceId, pr, ...(pr === "diff" ? { diff } : {}) });
-      navigate(`/runs/${encodeURIComponent(run_id)}`);
+      navigate(`/app/runs/${encodeURIComponent(run_id)}`);
     } catch (err) {
       setError((err as Error).message);
       setBusy(false);
