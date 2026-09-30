@@ -151,11 +151,11 @@ export function repoOf(instanceId: string): string {
   return instanceId.slice(0, instanceId.lastIndexOf("-")).replace("__", "/");
 }
 
-/** A row in a list of checks: "repo #29" for pull requests, the instance id for demos. */
-export function runLabel(run: RunSummary): { title: string; full: string } {
+/** A row in a list of checks: "repo #29" for pull requests (the number never truncates), the instance id for demos. */
+export function runLabel(run: RunSummary): { name: string; number: string; full: string } {
   if (run.repo && run.pr_number != null)
-    return { title: `${run.repo.split("/").pop()} #${run.pr_number}`, full: `${run.repo} #${run.pr_number}` };
-  return { title: run.instance_id, full: run.instance_id };
+    return { name: run.repo.split("/").pop()!, number: `#${run.pr_number}`, full: `${run.repo} #${run.pr_number}` };
+  return { name: run.instance_id, number: "", full: run.instance_id };
 }
 
 export const PR_LABEL: Record<string, string> = {

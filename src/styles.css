@@ -506,6 +506,13 @@ select {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.run-row__name {
+  display: inline-block;
+  max-width: calc(100% - 7ch); /* room for " #12345": the PR number never truncates */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
 .run-row__meta {
   grid-column: 1;
   font-size: 13.5px;
@@ -514,6 +521,18 @@ select {
 .run-row__status {
   grid-column: 2;
   grid-row: 1 / span 2;
+}
+@media (max-width: 480px) {
+  /* a wide verdict chip would squeeze the name to a few letters: give it its own line */
+  .run-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .run-row__status {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    margin-top: 6px;
+  }
 }
 .empty {
   margin-top: 16px;

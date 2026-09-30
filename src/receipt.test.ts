@@ -162,10 +162,10 @@ describe("runLabel", () => {
   it("names a pull request check by its repository and number", () => {
     expect(runLabel(run({ instance_id: "LaZy-Wolf/receipts-demo-sympy#29", pr: "github",
                           repo: "LaZy-Wolf/receipts-demo-sympy", pr_number: 29 })))
-      .toEqual({ title: "receipts-demo-sympy #29", full: "LaZy-Wolf/receipts-demo-sympy #29" });
+      .toEqual({ name: "receipts-demo-sympy", number: "#29", full: "LaZy-Wolf/receipts-demo-sympy #29" });
   });
 
   it("keeps the instance id for demo checks", () => {
-    expect(runLabel(run({}))).toEqual({ title: "psf__requests-1142", full: "psf__requests-1142" });
+    expect(runLabel(run({}))).toEqual({ name: "psf__requests-1142", number: "", full: "psf__requests-1142" });
   });
 });

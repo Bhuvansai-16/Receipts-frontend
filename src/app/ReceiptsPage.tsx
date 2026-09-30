@@ -66,7 +66,9 @@ export function ReceiptsPage() {
             {runs.map((run) => (
               <li key={run.id}>
                 <Link to={`/app/runs/${encodeURIComponent(run.id)}`} className="run-row">
-                  <span className="run-row__id">{runLabel(run).full}</span>
+                  <span className="run-row__id" title={runLabel(run).full}>
+                    <span className="run-row__name">{runLabel(run).name}</span> {runLabel(run).number}
+                  </span>
                   <span className="run-row__meta">
                     {PR_LABEL[run.pr] ?? run.pr} · {timeAgo(run.started_at)}
                   </span>
