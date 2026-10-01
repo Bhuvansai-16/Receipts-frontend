@@ -270,6 +270,31 @@
   font-size: 15.5px;
 }
 
+.trust {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 56px;
+  align-items: center;
+}
+.trust__art {
+  max-width: 380px;
+}
+.trust__grid {
+  margin: 28px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px 32px;
+}
+.trust__grid dt {
+  font-weight: 650;
+  font-size: 17px;
+}
+.trust__grid dd {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: 15.5px;
+}
+
 .example {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
@@ -536,6 +561,7 @@
 @media (max-width: 960px) {
   .hero,
   .verdicts,
+  .trust,
   .example,
   .split,
   .compare {
@@ -550,6 +576,9 @@
   }
   .hero__art {
     max-width: 520px;
+  }
+  .trust__art {
+    max-width: 260px;
   }
 
   .example {
@@ -586,6 +615,9 @@
   .verdict-list li {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+  .trust__grid {
+    grid-template-columns: 1fr;
   }
 
   .cta-band {

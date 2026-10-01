@@ -7,7 +7,7 @@ import { VerdictChip } from "../components/VerdictChip";
 import example from "../example-receipt.json";
 import { fromEvidence } from "../receipt";
 import { useSession } from "../session";
-import { HeroPrinter, StepIssue, StepReceipt, StepSandbox } from "./illustrations";
+import { HeroPrinter, ShieldLock, StepIssue, StepReceipt, StepSandbox } from "./illustrations";
 
 // A real PROVEN run, bundled so the landing page needs no API call.
 const EXAMPLE = example as unknown as Evidence;
@@ -26,6 +26,13 @@ const GITHUB_POINTS = [
   { Icon: Zap, title: "Auto-check", text: "Turn it on for a repository and every new pull request gets checked by itself." },
   { Icon: MousePointerClick, title: "Check on demand", text: "Or open a repository in Receipts, pick a pull request and press Check." },
   { Icon: LockKeyhole, title: "Reads, never pushes", text: "The app reads code, issues and pull requests, and writes only its own check." },
+];
+
+const TRUST = [
+  { title: "Blind by construction", text: "The test writer reads the issue and the original code. It never sees the change it will judge." },
+  { title: "Repeated, not lucky", text: "Every verdict needs three identical runs on each side. Flaky results end as Unproven." },
+  { title: "Isolated sandboxes", text: "Code runs in fresh Nebius sandboxes. No token or secret ever goes inside." },
+  { title: "A second opinion", text: "Before a pull request is called Refuted, a larger model checks the test matches the issue." },
 ];
 
 const FAQ = [
@@ -277,6 +284,29 @@ export function HomePage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="home-section trust" aria-labelledby="trust-title">
+        <div className="trust__art">
+          <ShieldLock />
+        </div>
+        <div>
+          <h2 id="trust-title" className="display-2">
+            Built so you can trust a green check
+          </h2>
+          <dl className="trust__grid">
+            {TRUST.map((t) => (
+              <div key={t.title}>
+                <dt>{t.title}</dt>
+                <dd>{t.text}</dd>
+              </div>
+            ))}
+          </dl>
+          <Link to="/security" className="text-link">
+            How Receipts keeps your code safe
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
       </section>
 
       <section className="home-section example" aria-labelledby="example-title">
