@@ -34,3 +34,7 @@ this app's origin (`http://localhost:5173` by default), or the browser blocks it
 
 Serve the UI and the API from one parent domain, for example `app.example.com` and `api.example.com`: the
 session cookie belongs to the API, and browsers only send it along from a page on the same site.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
