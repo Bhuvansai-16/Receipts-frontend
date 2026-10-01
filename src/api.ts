@@ -213,12 +213,15 @@ export const api = {
   start: (body: { instance_id: string; pr: PrKind; diff?: string }) => send<{ run_id: string }>("POST", "/api/runs", body),
 };
 
-const EVENT_TYPES = [
+/** Every event a check emits: EventSource drops a type that has no listener. */
+export const EVENT_TYPES = [
   "status",
   "claim",
   "env_ready",
+  "research",
   "writer_progress",
   "writer_submit",
+  "writer_retry",
   "test_accepted",
   "fork",
   "suite",
