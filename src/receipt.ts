@@ -14,6 +14,8 @@ export interface Receipt {
   /** Set when no test was accepted and the check retried writing once; model is the short model name. */
   writerRetry?: { model: string };
   testAttempts?: number;
+  /** Set when the check reused the blind test an earlier check wrote for the same issue: that run's id. */
+  reusedFrom?: string;
   base: Tile[];
   pr: Tile[];
   patchApplied: boolean;
@@ -47,6 +49,7 @@ export function fromEvents(events: ReceiptEvent[]): Receipt {
       r.submissions.push({ attempt: Number(d.attempt), accepted: Boolean(d.accepted), reason: String(d.reason ?? "") });
     else if (type === "writer_progress") r.writerCommands = Number(d.commands);
     else if (type === "writer_retry") r.writerRetry = { model: String(d.model ?? "").split("/").pop() ?? "" };
+    else if (type === "test_reused") r.reusedFrom = String(d.from ?? "");
     else if (type === "test_accepted") r.testAttempts = Number(d.attempts);
     else if (type === "fork" && (d.side === "base" || d.side === "pr"))
       forks[d.side as "base" | "pr"].push({ n: Number(d.n), tile: { passed: Boolean(d.passed), message: String(d.message ?? "") } });
@@ -82,6 +85,7 @@ function derive(ev: Evidence): Receipt {
   r.claim = ev.claim;
   r.envReady = ev.writer !== undefined;
   if (ev.writer?.test_code) r.testAttempts = ev.writer.attempts;
+  if (ev.writer?.reused_from) r.reusedFrom = ev.writer.reused_from;
   const f = ev.forks;
   if (f) {
     r.base = f.base_with_test.map(tile);
@@ -163,6 +167,7 @@ export function runLabel(run: RunSummary): { name: string; number: string; full:
 
 /** The receipt's line under "Blind test": where the test came from. */
 export function blindTestNote(r: Receipt): string {
+  if (r.reusedFrom) return "written from the issue alone in an earlier check";
   return r.writerRetry ? "written from the issue alone, after one automatic retry" : "written from the issue alone";
 }
 

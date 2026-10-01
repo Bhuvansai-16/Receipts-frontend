@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { API_URL, type Evidence, type RunSummaryRaw, type Submission } from "../api";
 import { safeHref } from "../receipt";
 
@@ -25,10 +26,18 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
             <summary>
               Blind test
               <span className="disclosure__meta">
-                written from the issue alone, {w.attempts} attempt{w.attempts === 1 ? "" : "s"}
+                {w.reused_from
+                  ? "written from the issue alone in an earlier check"
+                  : `written from the issue alone, ${w.attempts} attempt${w.attempts === 1 ? "" : "s"}`}
               </span>
             </summary>
             <div className="disclosure__body">
+              {w.reused_from && (
+                <p>
+                  An earlier check of the same issue wrote this test.{" "}
+                  <Link to={`/runs/${encodeURIComponent(w.reused_from)}`}>See how it was written</Link>
+                </p>
+              )}
               <CodeBlock filename="receipts_test.py" code={w.test_code.trim()} />
               {w.scope_check && <p>Scope check: {w.scope_check}</p>}
             </div>

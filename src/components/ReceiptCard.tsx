@@ -118,7 +118,7 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
             pending={!wroteTest && live}
             value={
               wroteTest ? (
-                `${r.testAttempts} attempt${r.testAttempts === 1 ? "" : "s"}`
+                r.reusedFrom ? "reused" : `${r.testAttempts} attempt${r.testAttempts === 1 ? "" : "s"}`
               ) : live ? (
                 <>
                   {r.submissions.length ? `attempt ${r.submissions.length + 1}` : "writing"}

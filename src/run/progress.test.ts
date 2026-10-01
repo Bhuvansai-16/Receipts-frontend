@@ -52,3 +52,10 @@ describe("progressSteps", () => {
     expect(progressSteps(r, true, false).steps[2].detail).toBe("retrying with Nemotron-3-Ultra-550b-a55b");
   });
 });
+
+describe("a reused blind test", () => {
+  it("says so on the writer step", () => {
+    const r = fromEvents([e("claim", { kind: "fix", claim: "c" }), e("env_ready"), e("test_reused", { from: "x" }), e("test_accepted", { attempts: 0 })]);
+    expect(progressSteps(r, true, false).steps.find((s) => s.id === "writer")?.detail).toBe("reused from an earlier check");
+  });
+});

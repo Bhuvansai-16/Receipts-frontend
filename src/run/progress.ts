@@ -29,7 +29,9 @@ export function progressSteps(r: Receipt, live: boolean, queued: boolean): Progr
       label: "Write the blind test",
       done: wrote,
       detail: wrote
-        ? `${r.testAttempts} attempt${r.testAttempts === 1 ? "" : "s"}`
+        ? r.reusedFrom
+          ? "reused from an earlier check"
+          : `${r.testAttempts} attempt${r.testAttempts === 1 ? "" : "s"}`
         : r.writerRetry
           ? `retrying with ${r.writerRetry.model}`
           : r.writerCommands

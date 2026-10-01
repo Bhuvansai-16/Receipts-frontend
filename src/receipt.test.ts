@@ -200,3 +200,22 @@ describe("safeHref", () => {
     expect(receiptTitle(ev).url).toBeNull();
   });
 });
+
+describe("a reused blind test", () => {
+  it("is marked from live events and from stored evidence", () => {
+    const live = fromEvents([
+      e("claim", { kind: "fix", claim: "c" }),
+      e("env_ready"),
+      e("test_reused", { from: "x-gold-1" }),
+      e("test_accepted", { attempts: 0, reused_from: "x-gold-1" }),
+    ]);
+    expect(live.reusedFrom).toBe("x-gold-1");
+    expect(live.testAttempts).toBe(0);
+    expect(blindTestNote(live)).toBe("written from the issue alone in an earlier check");
+    const stored = fromEvidence({
+      instance_id: "x",
+      writer: { attempts: 0, reason: "reused", test_code: "def test_a(): assert 0", reused_from: "x-gold-1" },
+    } as Evidence);
+    expect(stored.reusedFrom).toBe("x-gold-1");
+  });
+});

@@ -149,6 +149,8 @@ export interface Evidence {
     attempts: number;
     reason: string;
     test_code: string | null;
+    /** Run id of the earlier check whose blind test this check reused. */
+    reused_from?: string;
     submissions?: Submission[];
     scope_check?: string;
     tool_log?: { cmd: string; exit: number; output: string }[];
