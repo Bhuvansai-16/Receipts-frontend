@@ -64,6 +64,12 @@ const UNPROVEN: { match: RegExp; headline: string; body: string; next?: string }
     body: "The check ended before a verdict. Nothing was posted as a failure.",
     next: "Start it again whenever you're ready.",
   },
+  {
+    match: /model was unavailable/,
+    headline: "The model service didn't answer",
+    body: "The test-writing model didn't respond, so nothing was checked. This says nothing about the pull request.",
+    next: "Check again in a few minutes.",
+  },
 ];
 
 /** A retry is part of the story: the first writer failed, which says nothing about the pull request. */

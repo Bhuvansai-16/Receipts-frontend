@@ -71,6 +71,7 @@ describe("explainVerdict", () => {
       ["second opinion doubts the test: checks formatting", "The test may not match the issue"],
       ["pipeline error: EnvironmentSetupError: setting up octo/hello failed: pip", "The repository couldn't be set up"],
       ["Stopped before it finished.", "You stopped this check"],
+      ["the test writer's model was unavailable: APIConnectionError: down", "The model service didn't answer"],
       ["something new", "Not enough evidence either way"],
     ];
     for (const [reason, headline] of cases) expect(explain("UNPROVEN", reason).headline).toBe(headline);
