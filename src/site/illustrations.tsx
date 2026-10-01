@@ -223,3 +223,125 @@ export function StepReceipt() {
     </svg>
   );
 }
+
+/** Security: a shield with a lock. */
+export function ShieldLock() {
+  return (
+    <svg viewBox="0 0 280 260" className="illustration" role="img" aria-label="A shield with a lock">
+      <defs>
+        <HoneyGradient id="sl-honey" />
+        <SoftShadow id="sl-shadow" y={14} blur={14} opacity={0.18} />
+        <radialGradient id="sl-bg" cx="50%" cy="45%" r="60%">
+          <stop offset="0" stopColor="#FFF8EC" />
+          <stop offset="1" stopColor="#FBE7C4" />
+        </radialGradient>
+      </defs>
+      <circle cx="140" cy="130" r="118" fill="url(#sl-bg)" />
+      <g filter="url(#sl-shadow)">
+        <path d="M140 30 L218 60 V124 C218 176 186 210 140 230 C94 210 62 176 62 124 V60 Z" fill="url(#sl-honey)" />
+      </g>
+      <path d="M140 44 L204 69 V124 C204 150 194 172 176 188" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity="0.45" />
+      <path d="M122 120 V104 a18 18 0 0 1 36 0 V120" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" />
+      <rect x="108" y="116" width="64" height="52" rx="12" fill="#fff" />
+      <circle cx="140" cy="137" r="7" fill={HONEY_DARK} />
+      <rect x="137" y="139" width="6" height="15" rx="3" fill={HONEY_DARK} />
+      <circle cx="232" cy="60" r="12" fill={INK} />
+      <circle cx="46" cy="190" r="9" fill="url(#sl-honey)" />
+    </svg>
+  );
+}
+
+/** Live demo: a check printing as it runs, with a play button to start one. */
+export function LiveCheck() {
+  return (
+    <svg viewBox="0 0 280 260" className="illustration" role="img" aria-label="A check in progress: three failed runs on the original code, two passing runs with the change">
+      <defs>
+        <HoneyGradient id="lc-honey" />
+        <SoftShadow id="lc-shadow" y={10} blur={11} opacity={0.16} />
+        <radialGradient id="lc-bg" cx="50%" cy="45%" r="60%">
+          <stop offset="0" stopColor="#FFF8EC" />
+          <stop offset="1" stopColor="#FBE7C4" />
+        </radialGradient>
+      </defs>
+      <circle cx="140" cy="130" r="118" fill="url(#lc-bg)" />
+      <g filter="url(#lc-shadow)">
+        <rect x="34" y="46" width="212" height="150" rx="20" fill="#fff" />
+      </g>
+      <circle cx="58" cy="72" r="12" fill="#F2A32B" opacity="0.25" />
+      <circle cx="58" cy="72" r="6" fill="url(#lc-honey)" />
+      <rect x="76" y="67" width="78" height="10" rx="5" fill={INK} />
+      <line x1="54" y1="92" x2="226" y2="92" stroke={MUTED} strokeWidth="2" strokeDasharray="4 5" />
+      <rect x="54" y="113" width="46" height="8" rx="4" fill={MUTED} />
+      {[160, 184, 208].map((x) => (
+        <Tile key={x} x={x} y={108} ok={false} />
+      ))}
+      <rect x="54" y="141" width="34" height="8" rx="4" fill={MUTED} />
+      <Tile x={160} y={136} ok />
+      <Tile x={184} y={136} ok />
+      <rect x="209" y="137" width="16" height="16" rx="5" fill="none" stroke={MUTED} strokeWidth="2" strokeDasharray="3 3" />
+      <rect x="54" y="170" width="58" height="8" rx="4" fill="#EAE5DC" />
+      <rect x="160" y="170" width="66" height="8" rx="4" fill="#EAE5DC" />
+      <rect x="160" y="170" width="40" height="8" rx="4" fill="url(#lc-honey)" />
+      <g filter="url(#lc-shadow)">
+        <circle cx="234" cy="212" r="26" fill="url(#lc-honey)" />
+      </g>
+      <path d="M227 199 L246 212 L227 225 Z" fill="#fff" stroke="#fff" strokeWidth="4" strokeLinejoin="round" />
+      <rect x="196" y="24" width="40" height="14" rx="7" fill={INK} />
+      <circle cx="36" cy="214" r="9" fill="url(#lc-honey)" />
+    </svg>
+  );
+}
+
+/** How it works: the issue, the test written from it, and the receipt that test produces. */
+export function HowFlow() {
+  return (
+    <svg viewBox="0 0 280 260" className="illustration" role="img" aria-label="An issue, the test written from it, and a receipt stamped Proven">
+      <defs>
+        <HoneyGradient id="hf-honey" />
+        <SoftShadow id="hf-shadow" y={8} blur={9} opacity={0.15} />
+        <radialGradient id="hf-bg" cx="50%" cy="45%" r="60%">
+          <stop offset="0" stopColor="#FFF8EC" />
+          <stop offset="1" stopColor="#FBE7C4" />
+        </radialGradient>
+      </defs>
+      <circle cx="140" cy="130" r="118" fill="url(#hf-bg)" />
+      <g transform="rotate(-7 82 76)">
+        <g filter="url(#hf-shadow)">
+          <rect x="22" y="36" width="120" height="80" rx="16" fill="#fff" />
+        </g>
+        <circle cx="40" cy="56" r="6" fill={OK} />
+        <rect x="52" y="51" width="62" height="9" rx="4.5" fill={INK} />
+        <rect x="36" y="76" width="90" height="7" rx="3.5" fill="#E6E1D8" />
+        <rect x="36" y="92" width="70" height="7" rx="3.5" fill="#E6E1D8" />
+      </g>
+      <g filter="url(#hf-shadow)">
+        <rect x="86" y="96" width="124" height="80" rx="16" fill={INK} />
+      </g>
+      <text x="102" y="120" fontFamily={MONO} fontSize="12" fill="#F2A32B">
+        def test_
+      </text>
+      <rect x="102" y="134" width="84" height="7" rx="3.5" fill="#57534D" />
+      <rect x="114" y="148" width="64" height="7" rx="3.5" fill="#57534D" />
+      <rect x="114" y="162" width="40" height="7" rx="3.5" fill="#57534D" />
+      <g filter="url(#hf-shadow)">
+        <path d={`M168 118 H248 V214${" l-10 10 l-10 -10".repeat(4)} Z`} fill="#fff" />
+      </g>
+      <rect x="182" y="132" width="52" height="8" rx="4" fill={INK} />
+      {[187, 202, 217].map((x) => (
+        <Tile key={`b${x}`} x={x} y={150} ok={false} size={12} />
+      ))}
+      {[187, 202, 217].map((x) => (
+        <Tile key={`p${x}`} x={x} y={168} ok size={12} />
+      ))}
+      <line x1="182" y1="188" x2="234" y2="188" stroke={MUTED} strokeWidth="1.6" strokeDasharray="3 4" />
+      <g transform="rotate(-9 208 204)">
+        <rect x="181" y="194" width="54" height="20" rx="5" fill="none" stroke={HONEY_DARK} strokeWidth="2" />
+        <text x="208" y="208" textAnchor="middle" fontFamily={MONO} fontSize="10" fontWeight="700" letterSpacing="1" fill={HONEY_DARK}>
+          PROVEN
+        </text>
+      </g>
+      <circle cx="240" cy="62" r="12" fill="url(#hf-honey)" />
+      <rect x="36" y="186" width="34" height="13" rx="6.5" fill={INK} />
+    </svg>
+  );
+}

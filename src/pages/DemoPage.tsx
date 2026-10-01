@@ -5,6 +5,7 @@ import { api, type DemoInfo } from "../api";
 import { RunStatus } from "../components/RecentRuns";
 import { demoMessage, groupCases } from "../demo";
 import { runLabel, timeAgo } from "../receipt";
+import { LiveCheck } from "../site/illustrations";
 
 const KIND_LABEL: Record<string, string> = {
   "real fix": "Real fix",
@@ -61,13 +62,18 @@ export function DemoPage() {
 
   return (
     <article className="doc-page doc-page--wide demo-page">
-      <header className="doc-page__head">
-        <h1 className="display-1">Watch a live check</h1>
-        <p className="section-lead">
-          Pick a pull request below. Receipts writes the missing test from the issue alone, runs it in Nebius
-          sandboxes before and after the change, and prints the receipt as it goes. No account needed; a check takes
-          a few minutes.
-        </p>
+      <header className="doc-page__head doc-page__head--art">
+        <div>
+          <h1 className="display-1">Watch a live check</h1>
+          <p className="section-lead">
+            Pick a pull request below. Receipts writes the missing test from the issue alone, runs it in Nebius
+            sandboxes before and after the change, and prints the receipt as it goes. No account needed; a check takes
+            a few minutes.
+          </p>
+        </div>
+        <div className="doc-page__art">
+          <LiveCheck />
+        </div>
       </header>
 
       {info?.live && (

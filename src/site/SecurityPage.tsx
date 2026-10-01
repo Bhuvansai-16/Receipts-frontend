@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ShieldLock } from "./illustrations";
 
 const PERMISSIONS = [
   { name: "Metadata", access: "Read", why: "List the repositories you chose. Required by GitHub." },
@@ -15,9 +16,14 @@ export function SecurityPage() {
 
   return (
     <article className="doc-page doc-page--wide">
-      <header className="doc-page__head">
-        <h1 className="display-1">Security</h1>
-        <p className="section-lead">What Receipts can see, where your code runs, and what it keeps.</p>
+      <header className="doc-page__head doc-page__head--art">
+        <div>
+          <h1 className="display-1">Security</h1>
+          <p className="section-lead">What Receipts can see, where your code runs, and what it keeps.</p>
+        </div>
+        <div className="doc-page__art">
+          <ShieldLock />
+        </div>
       </header>
 
       <div className="sec-grid">

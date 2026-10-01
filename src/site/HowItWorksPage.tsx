@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { HowFlow } from "./illustrations";
 
 const STAGES = [
   {
@@ -47,11 +48,16 @@ export function HowItWorksPage() {
 
   return (
     <article className="doc-page doc-page--wide">
-      <header className="doc-page__head">
-        <h1 className="display-1">How a check works</h1>
-        <p className="section-lead">
-          Each line of a receipt comes from one stage. Here is what happens behind each of them.
-        </p>
+      <header className="doc-page__head doc-page__head--art">
+        <div>
+          <h1 className="display-1">How a check works</h1>
+          <p className="section-lead">
+            Each line of a receipt comes from one stage. Here is what happens behind each of them.
+          </p>
+        </div>
+        <div className="doc-page__art">
+          <HowFlow />
+        </div>
       </header>
       <ol className="stages">
         {STAGES.map((s) => (

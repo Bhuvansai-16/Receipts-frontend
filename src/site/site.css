@@ -601,6 +601,25 @@
 .doc-page__head {
   padding-bottom: 12px;
 }
+/* Text on the left, an illustration in the space beside it; phones get the text alone. */
+.doc-page__head--art {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  gap: 48px;
+  align-items: center;
+}
+.doc-page__art {
+  width: 100%;
+  justify-self: end;
+}
+@media (max-width: 860px) {
+  .doc-page__head--art {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .doc-page__art {
+    display: none;
+  }
+}
 .doc-section {
   margin-top: 48px;
   scroll-margin-top: 88px;
