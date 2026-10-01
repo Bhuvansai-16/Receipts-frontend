@@ -58,7 +58,7 @@ export function Overview() {
           Add repositories
         </a>
       ) : (
-        <span className="hint">The GitHub App isn't set up on this server yet.</span>
+        <span className="hint">Adding repositories is unavailable right now.</span>
       );
     return (
       <Link className={cls} to="/app/repos">
@@ -104,16 +104,9 @@ export function Overview() {
           </section>
         ) : (
           <section aria-labelledby="setup-title" className="panel">
-            <div className="panel__head">
-              <h2 id="setup-title" className="panel__title">
-                Get set up
-              </h2>
-              {me && (
-                <p className="usage">
-                  <strong>{Math.max(0, me.usage.per_day - me.usage.today)}</strong> of {me.usage.per_day} checks left today
-                </p>
-              )}
-            </div>
+            <h2 id="setup-title" className="panel__title">
+              Get set up
+            </h2>
             {!steps ? (
               <div aria-hidden="true">
                 {[70, 60, 66].map((w) => (

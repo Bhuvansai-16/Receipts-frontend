@@ -53,7 +53,7 @@ export function PullRequests() {
       <header className="app-page__head app-page__head--row">
         <div>
           <h1 className="page-title">{fullName}</h1>
-          <p className="lead">Open pull requests. Each check writes a test from the linked issue and runs it before and after.</p>
+          <p className="lead">Open pull requests, with the latest receipt for each.</p>
         </div>
         {repo && (
           <a href={repo.url} target="_blank" rel="noreferrer" className="btn btn--quiet btn--sm">

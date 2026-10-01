@@ -5,7 +5,7 @@ import { api } from "../api";
 import { EvidenceDetails } from "../components/EvidenceDetails";
 import { ReceiptCard } from "../components/ReceiptCard";
 import { VerdictChip, verdictLabel } from "../components/VerdictChip";
-import { formatDuration, formatTokens, receiptTitle, safeHref, timeAgo } from "../receipt";
+import { formatDuration, receiptTitle, safeHref, timeAgo } from "../receipt";
 import { explainVerdict } from "../run/explain";
 import { progressSteps, type StepState } from "../run/progress";
 import { reveal, useRun } from "../run/useRun";
@@ -196,66 +196,60 @@ export function AppRunPage() {
               <p>{explanation.body}</p>
               {explanation.detail && <pre className="explain__detail">{explanation.detail}</pre>}
               {explanation.next && <p className="explain__next">{explanation.next}</p>}
-              {receipt.verdict && (
-                <p className="explain__meta">
-                  Took {formatDuration(receipt.verdict.seconds)} and {formatTokens(receipt.verdict.tokens)}.
-                  {source ? " The result is also on the pull request as a Receipts check." : ""}
-                </p>
+              {receipt.verdict && source && (
+                <p className="explain__meta">The result is also on the pull request as a Receipts check.</p>
               )}
             </section>
           )}
 
-          <section className="panel progress" aria-labelledby="progress-title">
-            <div className="progress__head">
-              <h2 id="progress-title" className="panel__title">
-                {live ? "Progress" : "How it ran"}
-              </h2>
-              <span className="progress__count">
-                {progress.done} of {progress.total} steps
-              </span>
-            </div>
-            {live && (
-              <>
-                <div
-                  className="progress__bar"
-                  role="progressbar"
-                  aria-valuemin={0}
-                  aria-valuemax={progress.total}
-                  aria-valuenow={progress.done}
-                  aria-label="Steps done"
-                >
-                  <span style={{ width: `${Math.max(4, (progress.done / progress.total) * 100)}%` }} />
-                </div>
-                <p className="progress__now" aria-live="polite">
-                  {queued ? "Waiting for a free sandbox." : current ? `${current.label}…` : "Finishing up…"}
-                  {elapsed !== null && <span> {formatDuration(elapsed)} so far</span>}
-                </p>
-              </>
-            )}
-            <ol className="steps-list">
-              {progress.steps.map((s) => {
-                const Icon = STEP_ICON[s.state];
-                return (
-                  <li key={s.id} className={`steps-list__item is-${s.state}`}>
-                    <span className="steps-list__icon" aria-hidden="true">
-                      <Icon size={14} strokeWidth={2.75} />
-                    </span>
-                    <span className="steps-list__label">{s.label}</span>
-                    <span className="steps-list__detail">
-                      {s.detail ?? (s.state === "skipped" ? "not needed" : s.state === "active" ? "in progress" : "")}
-                    </span>
-                    <span className="visually-hidden">({s.state})</span>
-                  </li>
-                );
-              })}
-            </ol>
-            {live && (
+          {/* Only while it runs: a finished receipt already shows every step. */}
+          {live && (
+            <section className="panel progress" aria-labelledby="progress-title">
+              <div className="progress__head">
+                <h2 id="progress-title" className="panel__title">
+                  Progress
+                </h2>
+                <span className="progress__count">
+                  {progress.done} of {progress.total} steps
+                </span>
+              </div>
+              <div
+                className="progress__bar"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={progress.total}
+                aria-valuenow={progress.done}
+                aria-label="Steps done"
+              >
+                <span style={{ width: `${Math.max(4, (progress.done / progress.total) * 100)}%` }} />
+              </div>
+              <p className="progress__now" aria-live="polite">
+                {queued ? "Waiting for a free sandbox." : current ? `${current.label}…` : "Finishing up…"}
+                {elapsed !== null && <span> {formatDuration(elapsed)} so far</span>}
+              </p>
+              <ol className="steps-list">
+                {progress.steps.map((s) => {
+                  const Icon = STEP_ICON[s.state];
+                  return (
+                    <li key={s.id} className={`steps-list__item is-${s.state}`}>
+                      <span className="steps-list__icon" aria-hidden="true">
+                        <Icon size={14} strokeWidth={2.75} />
+                      </span>
+                      <span className="steps-list__label">{s.label}</span>
+                      <span className="steps-list__detail">
+                        {s.detail ?? (s.state === "active" ? "in progress" : "")}
+                      </span>
+                      <span className="visually-hidden">({s.state})</span>
+                    </li>
+                  );
+                })}
+              </ol>
               <p className="hint progress__note">
                 Usually 2 to 5 minutes. You can leave this page: the check keeps running
                 {source ? " and its result appears on the pull request." : "."}
               </p>
-            )}
-          </section>
+            </section>
+          )}
         </aside>
       </div>
 

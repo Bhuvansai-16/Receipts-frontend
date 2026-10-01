@@ -107,8 +107,11 @@ export function Repositories() {
         </div>
       ) : status && !status.app_configured ? (
         <div className="empty-state">
-          <h2>The GitHub App isn't set up yet</h2>
-          <p>Whoever runs this Receipts server needs to register the GitHub App (see the backend README).</p>
+          <h2>Repository checks are unavailable right now</h2>
+          <p>Receipts can't connect to GitHub at the moment. Try again later, or run a demo check meanwhile.</p>
+          <Link to="/app/demo" className="btn btn--primary">
+            Try a demo
+          </Link>
         </div>
       ) : status && !status.github_linked ? (
         <div className="empty-state">

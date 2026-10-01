@@ -105,6 +105,7 @@ export function SiteLayout() {
 }
 
 function SiteFooter() {
+  const { user } = useSession();
   return (
     <footer className="sitefooter">
       <div className="container sitefooter__inner">
@@ -128,20 +129,31 @@ function SiteFooter() {
               <li>
                 <Link to="/docs">Docs</Link>
               </li>
+              <li>
+                <Link to="/demo">Live demo</Link>
+              </li>
+              <li>
+                <Link to="/runs/pydata__xarray-4629-gold-20260928-201414">Example receipt</Link>
+              </li>
             </ul>
           </div>
           <div>
             <h2>Account</h2>
             <ul>
-              <li>
-                <Link to="/signup">Get started</Link>
-              </li>
-              <li>
-                <Link to="/signin">Sign in</Link>
-              </li>
-              <li>
-                <Link to="/runs/pydata__xarray-4629-gold-20260928-201414">Example receipt</Link>
-              </li>
+              {user ? (
+                <li>
+                  <Link to="/app">Open app</Link>
+                </li>
+              ) : (
+                <>
+                  <li>
+                    <Link to="/signup">Get started</Link>
+                  </li>
+                  <li>
+                    <Link to="/signin">Sign in</Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
           <div>

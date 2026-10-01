@@ -26,7 +26,7 @@ export function ReceiptsPage() {
   }
 
   useEffect(() => {
-    document.title = "Receipts · Receipts";
+    document.title = "Your receipts · Receipts";
     void load();
   }, []);
 

@@ -223,30 +223,3 @@ export function StepReceipt() {
     </svg>
   );
 }
-
-/** Trust: a shield with a lock. */
-export function ShieldLock() {
-  return (
-    <svg viewBox="0 0 280 260" className="illustration" role="img" aria-label="A shield with a lock">
-      <defs>
-        <HoneyGradient id="sl-honey" />
-        <SoftShadow id="sl-shadow" y={14} blur={14} opacity={0.18} />
-        <radialGradient id="sl-bg" cx="50%" cy="45%" r="60%">
-          <stop offset="0" stopColor="#FFF8EC" />
-          <stop offset="1" stopColor="#FBE7C4" />
-        </radialGradient>
-      </defs>
-      <circle cx="140" cy="130" r="118" fill="url(#sl-bg)" />
-      <g filter="url(#sl-shadow)">
-        <path d="M140 30 L218 60 V124 C218 176 186 210 140 230 C94 210 62 176 62 124 V60 Z" fill="url(#sl-honey)" />
-      </g>
-      <path d="M140 44 L204 69 V124 C204 150 194 172 176 188" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity="0.45" />
-      <path d="M122 120 V104 a18 18 0 0 1 36 0 V120" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" />
-      <rect x="108" y="116" width="64" height="52" rx="12" fill="#fff" />
-      <circle cx="140" cy="137" r="7" fill={HONEY_DARK} />
-      <rect x="137" y="139" width="6" height="15" rx="3" fill={HONEY_DARK} />
-      <circle cx="232" cy="60" r="12" fill={INK} />
-      <circle cx="46" cy="190" r="9" fill="url(#sl-honey)" />
-    </svg>
-  );
-}

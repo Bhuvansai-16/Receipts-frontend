@@ -182,7 +182,7 @@ export function AuthPage({ mode }: { mode: "signin" | "signup" }) {
 
   return (
     <AuthFrame>
-      <h1 className="authsplit__title">{signup ? "Welcome to Receipts" : "Welcome back"}</h1>
+      <h1 className="authsplit__title">{signup ? "Create your account" : "Welcome back"}</h1>
       <p className="authsplit__lead">
         {signup
           ? "Sign up to check pull requests with evidence, not opinions."

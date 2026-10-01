@@ -136,18 +136,7 @@
   gap: 10px;
   padding: 8px 8px 12px;
 }
-.profile__usage {
-  margin: 0 0 6px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--tint, oklch(0.978 0.018 80));
-  font-size: 13.5px;
-  color: var(--ink-2);
-}
-.profile__usage strong {
-  font-family: var(--mono);
-  color: var(--ink);
-}
+
 .profile__links {
   margin: 0;
   padding: 0;
@@ -268,13 +257,6 @@
 }
 .panel--tint .panel__title + p {
   margin-top: 8px;
-}
-.usage {
-  font-size: 14px;
-}
-.usage strong {
-  color: var(--ink);
-  font-family: var(--mono);
 }
 
 .overview {

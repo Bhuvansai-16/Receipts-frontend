@@ -26,7 +26,7 @@ const FAQ = [
   },
   {
     q: "Can I try it without GitHub?",
-    a: "Yes. Try a demo in the app runs a check on a real bug from SWE-bench Verified, with its real fix or a do-nothing change.",
+    a: "Yes. The live demo runs a real check without an account. Signed in, Try a demo lets you pick any SWE-bench Verified issue and check its real fix, a do-nothing change or your own diff.",
   },
 ];
 
@@ -109,7 +109,7 @@ export function DocsPage() {
 
         <section id="limits" className="doc-section">
           <h2>Limits</h2>
-          <p>Each account can run 2 checks at a time and 20 checks in any 24 hours. A check takes about two to six minutes.</p>
+          <p>Each account can run 2 checks at a time and 20 checks in any 24 hours. A check usually takes two to five minutes.</p>
         </section>
 
         <section id="faq" className="doc-section">

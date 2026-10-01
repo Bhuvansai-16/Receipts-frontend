@@ -2,7 +2,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type InstanceDetail, type InstanceSummary, type PrKind } from "../api";
 import { IssuePicker } from "../components/IssuePicker";
-import { RecentRuns } from "../components/RecentRuns";
 import { issueNumber } from "../receipt";
 
 const MAX_DIFF_BYTES = 200_000;
@@ -69,130 +68,124 @@ export function NewCheckPage() {
   }
 
   return (
-    <div className="home">
-      <section aria-labelledby="page-title">
-        <h1 id="page-title" className="page-title">
-          Try a demo
-        </h1>
+    <div className="app-page">
+      <header className="app-page__head">
+        <h1 className="page-title">Try a demo</h1>
         <p className="lead">
           Run a check on a real bug from SWE-bench Verified: pick an issue, then its real fix, a do-nothing pull
           request or your own diff.
         </p>
+      </header>
 
-        <form className="form" onSubmit={submit} noValidate>
-          <div className="field">
-            <label className="label" htmlFor="issue">
-              Issue
-            </label>
-            <IssuePicker inputId="issue" hintId="issue-hint" instances={instances} value={instanceId} onChange={setInstanceId} />
-            {loadError ? (
-              <p className="error" role="alert">
-                Couldn't load issues: {loadError}{" "}
-                <button type="button" className="link-btn" onClick={loadInstances}>
-                  Try again
+      <form className="form" onSubmit={submit} noValidate>
+        <div className="field">
+          <label className="label" htmlFor="issue">
+            Issue
+          </label>
+          <IssuePicker inputId="issue" hintId="issue-hint" instances={instances} value={instanceId} onChange={setInstanceId} />
+          {loadError ? (
+            <p className="error" role="alert">
+              Couldn't load issues: {loadError}{" "}
+              <button type="button" className="link-btn" onClick={loadInstances}>
+                Try again
+              </button>
+            </p>
+          ) : (
+            <p id="issue-hint" className="hint">
+              {instances ? `${instances.length} real issues from SWE-bench Verified, Python repos tested with pytest.` : " "}
+            </p>
+          )}
+          {!instanceId && instances && (
+            <div className="quick-picks">
+              <span>Try</span>
+              {QUICK_PICKS.filter((id) => instances.some((i) => i.id === id)).map((id) => (
+                <button key={id} type="button" className="quick-pick" onClick={() => setInstanceId(id)}>
+                  {id}
                 </button>
-              </p>
-            ) : (
-              <p id="issue-hint" className="hint">
-                {instances ? `${instances.length} real issues from SWE-bench Verified, Python repos tested with pytest.` : " "}
-              </p>
-            )}
-            {!instanceId && instances && (
-              <div className="quick-picks">
-                <span>Try</span>
-                {QUICK_PICKS.filter((id) => instances.some((i) => i.id === id)).map((id) => (
-                  <button key={id} type="button" className="quick-pick" onClick={() => setInstanceId(id)}>
-                    {id}
-                  </button>
-                ))}
-              </div>
-            )}
-            {instanceId && (
-              <div className="issue" aria-live="polite">
-                <div className="issue__head">
-                  <span>
-                    Issue #{issueNumber(instanceId)}
-                    {detail ? ` · ${detail.repo}` : ""}
-                  </span>
-                  {detail && detail.problem_statement.length > 480 && (
-                    <button type="button" className="link-btn" onClick={() => setFullIssue((v) => !v)} aria-expanded={fullIssue}>
-                      {fullIssue ? "Show less" : "Read the full issue"}
-                    </button>
-                  )}
-                </div>
-                {detail ? (
-                  <p className={`issue__text${fullIssue ? " issue__text--full" : ""}`}>{detail.problem_statement.trim()}</p>
-                ) : (
-                  <div aria-hidden="true">
-                    <span className="skeleton" style={{ width: "92%" }} />
-                    <span className="skeleton" style={{ width: "70%" }} />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <fieldset className="field">
-            <legend className="label" style={{ marginBottom: 8 }}>
-              Pull request
-            </legend>
-            <div className="segmented">
-              {PR_OPTIONS.map((o) => (
-                <label key={o.value}>
-                  <input
-                    type="radio"
-                    name="pr"
-                    value={o.value}
-                    checked={pr === o.value}
-                    onChange={() => setPr(o.value)}
-                    aria-describedby="pr-hint"
-                  />
-                  {o.label}
-                </label>
               ))}
             </div>
-            <p id="pr-hint" className="hint">
-              {hint}
-            </p>
-          </fieldset>
-
-          {pr === "diff" && (
-            <div className="field">
-              <label className="label" htmlFor="diff">
-                Diff
-              </label>
-              <textarea
-                id="diff"
-                className="textarea"
-                value={diff}
-                onChange={(e) => setDiff(e.target.value)}
-                placeholder={"diff --git a/requests/models.py b/requests/models.py\n--- a/requests/models.py\n+++ b/requests/models.py\n@@ ..."}
-                spellCheck={false}
-                aria-describedby="diff-hint"
-              />
-              <p id="diff-hint" className="hint">
-                {(diffBytes / 1000).toFixed(1)} KB of 200 KB
-              </p>
+          )}
+          {instanceId && (
+            <div className="issue" aria-live="polite">
+              <div className="issue__head">
+                <span>
+                  Issue #{issueNumber(instanceId)}
+                  {detail ? ` · ${detail.repo}` : ""}
+                </span>
+                {detail && detail.problem_statement.length > 480 && (
+                  <button type="button" className="link-btn" onClick={() => setFullIssue((v) => !v)} aria-expanded={fullIssue}>
+                    {fullIssue ? "Show less" : "Read the full issue"}
+                  </button>
+                )}
+              </div>
+              {detail ? (
+                <p className={`issue__text${fullIssue ? " issue__text--full" : ""}`}>{detail.problem_statement.trim()}</p>
+              ) : (
+                <div aria-hidden="true">
+                  <span className="skeleton" style={{ width: "92%" }} />
+                  <span className="skeleton" style={{ width: "70%" }} />
+                </div>
+              )}
             </div>
           )}
+        </div>
 
-          <div className="submit-row">
-            <button type="submit" className="btn btn--primary" disabled={busy || !instanceId}>
-              {busy ? "Starting check…" : "Run check"}
-            </button>
-            <p className="hint">Takes about two minutes. The test is written without seeing the pull request.</p>
+        <fieldset className="field">
+          <legend className="label" style={{ marginBottom: 8 }}>
+            Pull request
+          </legend>
+          <div className="segmented">
+            {PR_OPTIONS.map((o) => (
+              <label key={o.value}>
+                <input
+                  type="radio"
+                  name="pr"
+                  value={o.value}
+                  checked={pr === o.value}
+                  onChange={() => setPr(o.value)}
+                  aria-describedby="pr-hint"
+                />
+                {o.label}
+              </label>
+            ))}
           </div>
-          {error && (
-            <p className="error" role="alert">
-              {error}
-            </p>
-          )}
-        </form>
-      </section>
+          <p id="pr-hint" className="hint">
+            {hint}
+          </p>
+        </fieldset>
 
-      <aside className="home__recent">
-        <RecentRuns />
-      </aside>
+        {pr === "diff" && (
+          <div className="field">
+            <label className="label" htmlFor="diff">
+              Diff
+            </label>
+            <textarea
+              id="diff"
+              className="textarea"
+              value={diff}
+              onChange={(e) => setDiff(e.target.value)}
+              placeholder={"diff --git a/requests/models.py b/requests/models.py\n--- a/requests/models.py\n+++ b/requests/models.py\n@@ ..."}
+              spellCheck={false}
+              aria-describedby="diff-hint"
+            />
+            <p id="diff-hint" className="hint">
+              {(diffBytes / 1000).toFixed(1)} KB of 200 KB
+            </p>
+          </div>
+        )}
+
+        <div className="submit-row">
+          <button type="submit" className="btn btn--primary" disabled={busy || !instanceId}>
+            {busy ? "Starting check…" : "Run check"}
+          </button>
+          <p className="hint">Takes two to five minutes. The test is written without seeing the pull request.</p>
+        </div>
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+      </form>
     </div>
   );
 }

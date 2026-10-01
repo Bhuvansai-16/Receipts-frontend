@@ -1,7 +1,6 @@
 import { BookOpen, ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { api, type Usage } from "../api";
 import { useSession, type User } from "../session";
 
 export function displayName(user: User | null): string {
@@ -35,13 +34,12 @@ export function Avatar({ user, size = 32 }: { user: User | null; size?: number }
   );
 }
 
-/** Who is signed in, at the foot of the sidebar; opens account links, today's checks and sign out. */
+/** Who is signed in, at the foot of the sidebar; opens account links and sign out. */
 export function ProfileMenu() {
   const { user, signOut } = useSession();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
-  const [usage, setUsage] = useState<Usage | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const name = displayName(user);
@@ -50,7 +48,6 @@ export function ProfileMenu() {
 
   useEffect(() => {
     if (!open) return;
-    api.me().then((me) => setUsage(me.usage), () => undefined);
     const outside = (e: PointerEvent) => {
       if (!root.current?.contains(e.target as Node)) setOpen(false);
     };
@@ -94,15 +91,6 @@ export function ProfileMenu() {
               <span>{user?.email}</span>
             </span>
           </div>
-          <p className="profile__usage">
-            {usage ? (
-              <>
-                <strong>{Math.max(0, usage.per_day - usage.today)}</strong> of {usage.per_day} checks left today
-              </>
-            ) : (
-              <span className="skeleton" style={{ width: "70%", margin: 0 }} aria-hidden="true" />
-            )}
-          </p>
           <ul className="profile__links">
             <li>
               <Link to="/app/account">

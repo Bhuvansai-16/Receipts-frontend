@@ -7,14 +7,12 @@ import { VerdictChip } from "../components/VerdictChip";
 import example from "../example-receipt.json";
 import { fromEvidence } from "../receipt";
 import { useSession } from "../session";
-import { HeroPrinter, ShieldLock, StepIssue, StepReceipt, StepSandbox } from "./illustrations";
+import { HeroPrinter, StepIssue, StepReceipt, StepSandbox } from "./illustrations";
 
 // A real PROVEN run, bundled so the landing page needs no API call.
 const EXAMPLE = example as unknown as Evidence;
 const EXAMPLE_RECEIPT = fromEvidence(EXAMPLE);
 const EXAMPLE_LINK = `/runs/${encodeURIComponent(EXAMPLE.run_id ?? "")}`;
-
-const STACK = ["Nebius AI Cloud sandboxes", "Nebius Token Factory", "Neon", "LangSmith", "Tavily", "Deepagents"];
 
 const VERDICTS: { verdict: Verdict; text: string }[] = [
   { verdict: "PROVEN", text: "The test fails before the change and passes after it, three times each. Review it first." },
@@ -28,13 +26,6 @@ const GITHUB_POINTS = [
   { Icon: Zap, title: "Auto-check", text: "Turn it on for a repository and every new pull request gets checked by itself." },
   { Icon: MousePointerClick, title: "Check on demand", text: "Or open a repository in Receipts, pick a pull request and press Check." },
   { Icon: LockKeyhole, title: "Reads, never pushes", text: "The app reads code, issues and pull requests, and writes only its own check." },
-];
-
-const TRUST = [
-  { title: "Blind by construction", text: "The test writer reads the issue and the original code. It never sees the change it will judge." },
-  { title: "Repeated, not lucky", text: "Every verdict needs three identical runs on each side. Flaky results end as Unproven." },
-  { title: "Isolated sandboxes", text: "Code runs in fresh Nebius sandboxes. No token or secret ever goes inside." },
-  { title: "A second opinion", text: "Before a pull request is called Refuted, a larger model checks the test matches the issue." },
 ];
 
 const FAQ = [
@@ -93,7 +84,6 @@ export function HomePage() {
     <div className="home-page">
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__copy">
-          <p className="pill">Proof for pull requests</p>
           <h1 id="hero-title" className="hero__title">
             Every pull request makes a claim. <span className="hero__accent">Get the receipt.</span>
           </h1>
@@ -116,18 +106,8 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="stack" aria-label="Built on">
-        <p className="stack__label">Built on</p>
-        <ul className="stack__list">
-          {STACK.map((name) => (
-            <li key={name}>{name}</li>
-          ))}
-        </ul>
-      </section>
-
       <section className="home-section" aria-labelledby="why-title">
         <header className="section-head">
-          <p className="eyebrow">Why</p>
           <h2 id="why-title" className="display-2">
             A green CI check isn't proof
           </h2>
@@ -189,9 +169,8 @@ export function HomePage() {
 
       <section className="home-section" aria-labelledby="how-title">
         <header className="section-head">
-          <p className="eyebrow">How it works</p>
           <h2 id="how-title" className="display-2">
-            From issue to evidence in about five minutes
+            From issue to evidence in a few minutes
           </h2>
         </header>
         <div className="bento">
@@ -227,7 +206,6 @@ export function HomePage() {
 
       <section className="home-section split" aria-labelledby="github-title">
         <div className="split__copy">
-          <p className="eyebrow">On GitHub</p>
           <h2 id="github-title" className="display-2">
             The verdict lands on the pull request
           </h2>
@@ -280,7 +258,6 @@ export function HomePage() {
 
       <section className="home-section verdicts" aria-labelledby="verdicts-title">
         <div className="verdicts__intro">
-          <p className="eyebrow">Verdicts</p>
           <h2 id="verdicts-title" className="display-2">
             Five verdicts, one rule
           </h2>
@@ -302,55 +279,15 @@ export function HomePage() {
         </ul>
       </section>
 
-      <section className="home-section trust" aria-labelledby="trust-title">
-        <div className="trust__art">
-          <ShieldLock />
-        </div>
-        <div>
-          <p className="eyebrow">Security</p>
-          <h2 id="trust-title" className="display-2">
-            Built so you can trust a green check
-          </h2>
-          <dl className="trust__grid">
-            {TRUST.map((t) => (
-              <div key={t.title}>
-                <dt>{t.title}</dt>
-                <dd>{t.text}</dd>
-              </div>
-            ))}
-          </dl>
-          <Link to="/security" className="text-link">
-            How Receipts keeps your code safe
-            <ArrowRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-
       <section className="home-section example" aria-labelledby="example-title">
         <div className="example__copy">
-          <p className="eyebrow">Example</p>
           <h2 id="example-title" className="display-2">
             A real receipt
           </h2>
-          <p className="section-lead">A fix to xarray's merge, checked end to end.</p>
-          <dl className="stats">
-            <div>
-              <dt>Test attempts</dt>
-              <dd>4</dd>
-            </div>
-            <div>
-              <dt>Sandbox runs</dt>
-              <dd>6</dd>
-            </div>
-            <div>
-              <dt>Existing tests</dt>
-              <dd>32</dd>
-            </div>
-            <div>
-              <dt>Start to verdict</dt>
-              <dd>5 min</dd>
-            </div>
-          </dl>
+          <p className="section-lead">
+            A fix to xarray's merge, checked end to end. Read it top to bottom: the claim, the test written blind, three
+            runs on each side, and the verdict as the total.
+          </p>
           <Link to={EXAMPLE_LINK} className="text-link">
             Open the full receipt
             <ArrowRight size={16} aria-hidden="true" />
@@ -370,7 +307,6 @@ export function HomePage() {
 
       <section className="home-section faq-section" aria-labelledby="faq-title">
         <header className="section-head">
-          <p className="eyebrow">Questions</p>
           <h2 id="faq-title" className="display-2">
             Before you connect a repository
           </h2>
@@ -389,16 +325,11 @@ export function HomePage() {
         <h2 id="cta-title" className="display-2">
           Check your next pull request
         </h2>
-        <p>Connect GitHub, pick a repository, and get a receipt on your next pull request.</p>
-        <div className="cta-band__actions">
-          <Link to={start.to} className="btn btn--primary btn--lg">
-            {start.label}
-            <ArrowRight size={18} aria-hidden="true" />
-          </Link>
-          <Link to={EXAMPLE_LINK} className="btn btn--quiet btn--lg">
-            See an example
-          </Link>
-        </div>
+        <p>Connect GitHub, choose your repositories, and press Check on any open pull request.</p>
+        <Link to={start.to} className="btn btn--primary btn--lg">
+          {start.label}
+          <ArrowRight size={18} aria-hidden="true" />
+        </Link>
       </section>
     </div>
   );

@@ -18,7 +18,6 @@ export function AccountPage() {
     <div className="app-page">
       <header className="app-page__head">
         <h1 className="page-title">Account</h1>
-        <p className="lead">Your profile and today's checks.</p>
       </header>
       <section className="panel profile-card" aria-labelledby="profile-title">
         <Avatar user={user} size={56} />
@@ -53,11 +52,10 @@ export function AccountPage() {
         )}
         <p className="hint usage-note">The daily count covers the last 24 hours, so it frees up as older checks age out.</p>
       </section>
-      <section className="panel" aria-labelledby="session-title">
+      <section className="panel panel__head" aria-labelledby="session-title">
         <h2 id="session-title" className="panel__title">
           Session
         </h2>
-        <p className="hint">Signing out ends this browser's session.</p>
         <button type="button" className="btn btn--quiet btn--sm" onClick={() => signOut().then(() => navigate("/"))}>
           Sign out
         </button>
