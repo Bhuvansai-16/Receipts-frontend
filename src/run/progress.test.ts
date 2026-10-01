@@ -42,4 +42,13 @@ describe("progressSteps", () => {
     const events = [e("claim", { kind: "fix", claim: "c" }), e("error", { message: "Stopped before it finished." })];
     expect(states(events, false)).toEqual(["done", "failed", "skipped", "skipped", "skipped", "skipped", "skipped"]);
   });
+
+  it("says when the writer is retrying, and with which model", () => {
+    const r = fromEvents([
+      e("claim", { kind: "fix", claim: "c" }),
+      e("env_ready"),
+      e("writer_retry", { model: "nvidia/Nemotron-3-Ultra-550b-a55b" }),
+    ]);
+    expect(progressSteps(r, true, false).steps[2].detail).toBe("retrying with Nemotron-3-Ultra-550b-a55b");
+  });
 });

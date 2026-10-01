@@ -30,7 +30,9 @@ export function progressSteps(r: Receipt, live: boolean, queued: boolean): Progr
       done: wrote,
       detail: wrote
         ? `${r.testAttempts} attempt${r.testAttempts === 1 ? "" : "s"}`
-        : r.writerCommands
+        : r.writerRetry
+          ? `retrying with ${r.writerRetry.model}`
+          : r.writerCommands
           ? `attempt ${r.submissions.length + 1}, ${r.writerCommands} commands`
           : undefined,
     },

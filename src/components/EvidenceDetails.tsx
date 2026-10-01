@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_URL, type Evidence, type RunSummaryRaw } from "../api";
+import { API_URL, type Evidence, type RunSummaryRaw, type Submission } from "../api";
 
 /** Everything behind the verdict, one disclosure per question a reviewer would ask. */
 export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; runId: string }) {
@@ -7,7 +7,9 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
   const f = ev.forks;
   const baseSuite = Array.isArray(f?.base_suite) ? f?.base_suite[0] : f?.base_suite;
   const log = w?.tool_log ?? [];
-  const queries = w?.docs_queries ?? [];
+  const sources = ev.research?.sources ?? [];
+  const firstTries = ev.writer_first?.submissions ?? [];
+  const tries = w?.submissions ?? [];
 
   return (
     <section className="evidence" aria-labelledby="evidence-title">
@@ -28,6 +30,33 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
             <div className="disclosure__body">
               <CodeBlock filename="receipts_test.py" code={w.test_code.trim()} />
               {w.scope_check && <p>Scope check: {w.scope_check}</p>}
+            </div>
+          </details>
+        )}
+
+        {(tries.length > 0 || ev.writer_first) && (
+          <details className="disclosure" open={!w?.test_code}>
+            <summary>
+              Attempts
+              <span className="disclosure__meta">
+                every test the writer submitted, and what the checks said
+              </span>
+            </summary>
+            <div className="disclosure__body">
+              {ev.writer_first && (
+                <>
+                  <h3 className="run-list__head">First writer</h3>
+                  {firstTries.length > 0 ? (
+                    <Attempts items={firstTries} />
+                  ) : (
+                    <p className="rline__note">No test accepted: {ev.writer_first.reason}</p>
+                  )}
+                  <h3 className="run-list__head" style={{ marginTop: 18 }}>
+                    Automatic retry
+                  </h3>
+                </>
+              )}
+              <Attempts items={tries} />
             </div>
           </details>
         )}
@@ -73,7 +102,7 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
           <details className="disclosure" open={!ev.second_opinion.faithful}>
             <summary>
               Second opinion
-              <span className="disclosure__meta">checked before any negative verdict</span>
+              <span className="disclosure__meta">checked before any negative verdict, and to explain a mixed result</span>
             </summary>
             <div className="disclosure__body">
               <p>
@@ -89,18 +118,11 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
             <summary>
               How the test was written
               <span className="disclosure__meta">
-                {log.length} shell command{log.length === 1 ? "" : "s"}, {queries.length} documentation search
-                {queries.length === 1 ? "" : "es"}
+                {log.length} shell command{log.length === 1 ? "" : "s"}
               </span>
             </summary>
             <div className="disclosure__body">
               <p>The writer never sees the pull request. Every command it ran is listed here so nothing is hidden.</p>
-              {queries.length > 0 && (
-                <dl className="kv">
-                  <dt>Searches</dt>
-                  <dd>{queries.join(" · ")}</dd>
-                </dl>
-              )}
               {log.length > 0 && (
                 <ol className="log">
                   {log.map((entry, i) => (
@@ -115,6 +137,26 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
           </details>
         )}
       </div>
+
+      {sources.length > 0 && (
+        <details className="disclosure">
+          <summary>
+            Docs consulted
+            <span className="disclosure__meta">searched before the test was written, never the pull request</span>
+          </summary>
+          <div className="disclosure__body">
+            <ul className="sources">
+              {sources.map((s) => (
+                <li key={s.url}>
+                  <a href={s.url} target="_blank" rel="noreferrer">
+                    {s.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      )}
 
       <p className="hint" style={{ marginTop: 18 }}>
         <a href={`${API_URL}/api/runs/${encodeURIComponent(runId)}`}>Raw evidence (JSON)</a>
@@ -156,6 +198,33 @@ function RunGroup({ title, runs, mustPass }: { title: string; runs: RunSummaryRa
             </li>
           );
         })}
+      </ol>
+    </div>
+  );
+}
+
+function Attempts({ title, items }: { title?: string; items: Submission[] }) {
+  if (items.length === 0) return null;
+  return (
+    <div>
+      {title && <h3 className="run-list__head">{title}</h3>}
+      <ol className="run-list">
+        {items.map((s) => (
+          <li key={s.attempt}>
+            <p style={{ color: "var(--ink)" }}>
+              Attempt {s.attempt}: {s.accepted ? "accepted" : "rejected"}
+            </p>
+            {!s.accepted && <p className="rline__note">{s.reason}</p>}
+            {s.code && (
+              <details style={{ marginTop: 6 }}>
+                <summary style={{ cursor: "pointer", fontSize: 14 }}>The submitted file</summary>
+                <pre className="code" style={{ marginTop: 8 }}>
+                  {s.code.trim()}
+                </pre>
+              </details>
+            )}
+          </li>
+        ))}
       </ol>
     </div>
   );

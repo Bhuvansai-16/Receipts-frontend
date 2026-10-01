@@ -17,9 +17,31 @@ describe("explainVerdict", () => {
     expect(x.headline).toBe("The pull request does what it claims");
   });
 
-  it("turns a mixed result into a partial fix with the failing assertion", () => {
-    const x = explain("UNPROVEN", "PR runs are mixed or fail differently from base", [
-      e("fork", { side: "pr", n: 1, passed: false, message: "Expected z**4, got -z**4" }),
+  // A mixed result alone can't say whether the change missed part of the issue or the test is wrong
+  // (sympy #16: the test expected an evaluated -x - 2). Only a second opinion decides which way to word it.
+  const MIXED = "PR runs are mixed or fail differently from base";
+  const prFail = e("fork", { side: "pr", n: 1, passed: false, message: "Expected z**4, got -z**4" });
+
+  it("words a mixed result neutrally without a second opinion", () => {
+    const x = explain("UNPROVEN", MIXED, [prFail]);
+    expect(x.headline).toBe("Part of the blind test passes with the change");
+    expect(x.body).toContain("or the test expects something the issue doesn't");
+    expect(x.detail).toBe("Expected z**4, got -z**4");
+  });
+
+  it("says the test may be wrong when the second opinion doubts it", () => {
+    const x = explain("UNPROVEN", MIXED, [
+      prFail,
+      e("second_opinion", { faithful: false, reason: "It expects an evaluated expression.", about: "mixed" }),
+    ]);
+    expect(x.headline).toBe("The blind test may be wrong");
+    expect(x.body).toContain("It expects an evaluated expression.");
+  });
+
+  it("calls it a partial fix only when the second opinion backs the failing check", () => {
+    const x = explain("UNPROVEN", MIXED, [
+      prFail,
+      e("second_opinion", { faithful: true, reason: "The issue asks for z**4.", about: "mixed" }),
     ]);
     expect(x.headline).toBe("The pull request fixed part of it");
     expect(x.detail).toBe("Expected z**4, got -z**4");
@@ -44,5 +66,12 @@ describe("explainVerdict", () => {
   it("tells people how to make a pull request checkable", () => {
     const x = explain("NO_CHECKABLE_CLAIM", "classified as 'none': nothing to check");
     expect(x.next).toContain("Fixes #");
+  });
+
+  it("mentions an automatic retry and its model", () => {
+    const x = explain("PROVEN", "test fails on base and passes on the PR in 3/3 runs; existing tests hold", [
+      e("writer_retry", { model: "nvidia/Nemotron-3-Ultra-550b-a55b" }),
+    ]);
+    expect(x.body).toContain("retried once with Nemotron-3-Ultra-550b-a55b");
   });
 });

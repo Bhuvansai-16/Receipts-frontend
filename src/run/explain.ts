@@ -43,8 +43,8 @@ const UNPROVEN: { match: RegExp; headline: string; body: string; next?: string }
   },
   {
     match: /mixed or fail differently/,
-    headline: "The pull request fixed part of it",
-    body: "With the change, part of the blind test passes and part still fails, differently from before. The failing case below may be one the change misses.",
+    headline: "Part of the blind test passes with the change",
+    body: "With the change, part of the blind test passes and part still fails, differently from before. That can mean the change misses part of the issue, or the test expects something the issue doesn't.",
     next: "Read the failing assertion before merging.",
   },
   {
@@ -66,7 +66,17 @@ const UNPROVEN: { match: RegExp; headline: string; body: string; next?: string }
   },
 ];
 
+/** A retry is part of the story: the first writer failed, which says nothing about the pull request. */
 export function explainVerdict(r: Receipt, ev: Evidence): Explanation {
+  const e = explainBase(r, ev);
+  if (!r.writerRetry) return e;
+  return {
+    ...e,
+    body: `${e.body} The first test writer couldn't write a valid test, so Receipts retried once with ${r.writerRetry.model}.`,
+  };
+}
+
+function explainBase(r: Receipt, ev: Evidence): Explanation {
   const verdict = r.verdict?.verdict ?? ev.verdict;
   const reason = r.verdict?.reason ?? ev.reason ?? r.error ?? "";
   const prFailure = r.pr.find((t) => !t.passed)?.message || undefined;
@@ -102,6 +112,23 @@ export function explainVerdict(r: Receipt, ev: Evidence): Explanation {
         next: "Link the issue with \"Fixes #123\" in the pull request description, then check again.",
       };
   }
+  // A mixed result can mean a partial fix or a wrong test; only the second opinion picks the words.
+  if (/mixed or fail differently/.test(reason) && r.secondOpinion)
+    return r.secondOpinion.faithful
+      ? {
+          tone: "neutral",
+          headline: "The pull request fixed part of it",
+          body: `With the change, part of the blind test passes, but a check the issue asks for still fails. A second model agrees that check matches the issue: ${r.secondOpinion.reason}`,
+          next: "Share the failing case with the author before merging.",
+          detail: prFailure,
+        }
+      : {
+          tone: "neutral",
+          headline: "The blind test may be wrong",
+          body: `With the change, part of the blind test passes and one check still fails, but a second model thinks that check expects something the issue doesn't: ${r.secondOpinion.reason} Nothing here counts against the pull request.`,
+          next: "Review the pull request as usual. The failing check is shown for reference.",
+          detail: prFailure,
+        };
   const known = UNPROVEN.find((u) => u.match.test(reason));
   if (known) return { tone: "neutral", ...known, detail: known.match.source.includes("mixed") ? prFailure : undefined };
   return {

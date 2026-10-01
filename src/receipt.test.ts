@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Evidence, ReceiptEvent } from "./api";
 import type { RunSummary } from "./api";
-import { activeStep, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, runLabel, timeAgo } from "./receipt";
+import { activeStep, blindTestNote, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, runLabel, timeAgo } from "./receipt";
 
 const e = (type: string, data: Record<string, unknown> = {}): ReceiptEvent => ({ type, data });
 const fail = (msg: string) => ({ tests: 1, not_passed: { "t.py::t": { outcome: "failed", exc: "AssertionError", msg } }, output_tail: "out" });
@@ -167,5 +167,22 @@ describe("runLabel", () => {
 
   it("keeps the instance id for demo checks", () => {
     expect(runLabel(run({}))).toEqual({ name: "psf__requests-1142", number: "", full: "psf__requests-1142" });
+  });
+});
+
+describe("writer retry", () => {
+  it("notes an automatic retry and the model it used", () => {
+    const r = fromEvents([e("writer_retry", { model: "nvidia/Nemotron-3-Ultra-550b-a55b", why: "no test" })]);
+    expect(r.writerRetry).toEqual({ model: "Nemotron-3-Ultra-550b-a55b" });
+    expect(fromEvents([]).writerRetry).toBeUndefined();
+  });
+});
+
+describe("blindTestNote", () => {
+  it("says when the blind test came from the automatic retry", () => {
+    expect(blindTestNote(fromEvents([]))).toBe("written from the issue alone");
+    expect(blindTestNote(fromEvents([e("writer_retry", { model: "m" })]))).toBe(
+      "written from the issue alone, after one automatic retry",
+    );
   });
 });

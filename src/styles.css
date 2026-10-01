@@ -869,7 +869,9 @@ select {
   line-height: 1;
   color: var(--ink-3);
 }
-.disclosure[open] summary::after {
+/* each summary follows its own details, not an open parent (nested "pytest output", "The submitted file") */
+.disclosure[open] > summary::after,
+.disclosure details[open] > summary::after {
   content: "\2212";
 }
 .disclosure__meta {
@@ -923,6 +925,19 @@ select {
   padding: 0;
   display: grid;
   gap: 16px;
+}
+.run-list + .run-list__head,
+.run-list + div .run-list__head {
+  margin-top: 18px;
+}
+.sources {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+.sources a {
+  text-underline-offset: 3px;
 }
 .run-list__head {
   display: flex;

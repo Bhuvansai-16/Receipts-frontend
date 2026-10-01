@@ -104,6 +104,14 @@ export interface RunSummaryRaw {
   output_tail: string;
 }
 
+/** One counted test submission: the file the writer submitted and what the checks said. */
+export interface Submission {
+  attempt: number;
+  accepted: boolean;
+  reason: string;
+  code: string | null;
+}
+
 export interface Evidence {
   run_id?: string;
   instance_id: string;
@@ -114,8 +122,8 @@ export interface Evidence {
   writer?: {
     attempts: number;
     reason: string;
-    docs_queries?: string[];
     test_code: string | null;
+    submissions?: Submission[];
     scope_check?: string;
     tool_log?: { cmd: string; exit: number; output: string }[];
   };
@@ -127,6 +135,9 @@ export interface Evidence {
     pr_suite: RunSummaryRaw[] | RunSummaryRaw | null;
   };
   second_opinion?: { faithful: boolean; reason: string };
+  research?: { queries: string[]; sources: { title: string; url: string }[] };
+  /** Set when the first writer produced no valid test and the check retried once. */
+  writer_first?: { attempts: number; reason: string; submissions?: Submission[] };
   verdict?: Verdict;
   reason?: string;
   seconds?: number;

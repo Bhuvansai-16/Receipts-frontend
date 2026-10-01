@@ -11,6 +11,8 @@ export interface Receipt {
   envReady: boolean;
   submissions: { attempt: number; accepted: boolean; reason: string }[];
   writerCommands: number;
+  /** Set when no test was accepted and the check retried writing once; model is the short model name. */
+  writerRetry?: { model: string };
   testAttempts?: number;
   base: Tile[];
   pr: Tile[];
@@ -44,6 +46,7 @@ export function fromEvents(events: ReceiptEvent[]): Receipt {
     else if (type === "writer_submit")
       r.submissions.push({ attempt: Number(d.attempt), accepted: Boolean(d.accepted), reason: String(d.reason ?? "") });
     else if (type === "writer_progress") r.writerCommands = Number(d.commands);
+    else if (type === "writer_retry") r.writerRetry = { model: String(d.model ?? "").split("/").pop() ?? "" };
     else if (type === "test_accepted") r.testAttempts = Number(d.attempts);
     else if (type === "fork" && (d.side === "base" || d.side === "pr"))
       forks[d.side as "base" | "pr"].push({ n: Number(d.n), tile: { passed: Boolean(d.passed), message: String(d.message ?? "") } });
@@ -156,6 +159,11 @@ export function runLabel(run: RunSummary): { name: string; number: string; full:
   if (run.repo && run.pr_number != null)
     return { name: run.repo.split("/").pop()!, number: `#${run.pr_number}`, full: `${run.repo} #${run.pr_number}` };
   return { name: run.instance_id, number: "", full: run.instance_id };
+}
+
+/** The receipt's line under "Blind test": where the test came from. */
+export function blindTestNote(r: Receipt): string {
+  return r.writerRetry ? "written from the issue alone, after one automatic retry" : "written from the issue alone";
 }
 
 export const PR_LABEL: Record<string, string> = {

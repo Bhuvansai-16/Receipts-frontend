@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import type { Evidence, Verdict } from "../api";
 import {
   activeStep,
+  blindTestNote,
   formatDuration,
   formatTokens,
   receiptTitle,
@@ -129,7 +130,7 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
             }
             note={
               wroteTest
-                ? "written from the issue alone"
+                ? blindTestNote(r)
                 : live && r.submissions.length
                   ? `Rejected: ${r.submissions[r.submissions.length - 1].reason}`
                   : undefined
