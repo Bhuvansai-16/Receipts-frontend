@@ -18,22 +18,36 @@ this app's origin (`http://localhost:5173` by default), or the browser blocks it
 
 ## Structure
 
-- `src/site/`: public pages in one layout with the navbar and footer: Home, How it works, Security, Docs,
-  sign-in and sign-up, and public receipts (`/runs/:id`). Illustrations are inline SVG (`illustrations.tsx`).
+- `src/site/`: public pages in one layout with the navbar and footer: Home, Live demo (`/demo`), How it works,
+  Security, Docs, and public receipts (`/runs/:id`). Illustrations are inline SVG (`illustrations.tsx`).
+- `src/pages/`: sign-in and sign-up, the live demo, the public receipt page.
 - `src/app/`: the signed-in app at `/app`: Overview (setup checklist), Repositories, Pull requests
   (`/app/repos/:owner/:repo`), Receipts, Try a demo, Account.
 - `src/components/`: the receipt card, evidence, verdict chips, issue picker.
-- `src/api.ts`: typed client for the API; `src/session.tsx`: the signed-in user; `src/auth.ts`: Neon's auth
-  client, pointed at the API's `/api/auth` proxy and loaded after first paint.
+- `src/api.ts`: typed client for the API; `src/config.ts`: where the API and live events live;
+  `src/session.tsx`: the signed-in user; `src/auth.ts`: Neon's auth client, pointed at the API's `/api/auth`
+  proxy and loaded after first paint.
 
-## Deploy
+## Deploy on Vercel
 
-`npm run build` writes a static site to `dist/`. Host it anywhere static, with every path falling back to
-`index.html` (`public/_redirects` does this on Netlify and Cloudflare Pages, `vercel.json` on Vercel). Set
-`VITE_API_URL` at build time.
+The backend runs on Google Cloud Run (see `receipts-backend`'s README). Vercel serves this app and forwards
+`/api/*` to the backend (`vercel.json`), so the browser talks to one origin and the session cookie stays
+first-party, even on the free `*.vercel.app` and `*.run.app` hostnames. Live events stream straight from the
+backend (`VITE_EVENTS_URL`), because Vercel ends proxied requests after 120 seconds; that stream is public and
+needs no cookie.
 
-Serve the UI and the API from one parent domain, for example `app.example.com` and `api.example.com`: the
-session cookie belongs to the API, and browsers only send it along from a page on the same site.
+1. In `vercel.json`, replace `CLOUD-RUN-SERVICE-URL` with the backend's host (e.g.
+   `receipts-api-123456789.us-east5.run.app`).
+2. Vercel > Add New > Project > import this repository. Vite is detected: build `npm run build`, output
+   `dist`.
+3. Environment variable `VITE_EVENTS_URL` = `https://<cloud-run-url>` (Production and Preview). Leave
+   `VITE_API_URL` unset: production builds then call `/api` on their own origin.
+4. Deploy, then set the backend's `FRONTEND_URL` to this app's URL (CORS for the event stream, redirects after
+   sign-in).
+
+Without Vercel, `npm run build` writes a static site to `dist/` for any static host with every path falling
+back to `index.html` (`public/_redirects` does this on Netlify and Cloudflare Pages); set `VITE_API_URL` to
+the API at build time and serve both from one parent domain so the session cookie is sent.
 
 ## License
 
