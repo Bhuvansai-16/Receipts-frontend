@@ -1080,3 +1080,82 @@
     align-items: stretch;
   }
 }
+
+/* Wide docs-style pages (Live demo, How it works, Security) use the full content width. */
+.doc-page--wide {
+  max-width: none;
+}
+.doc-page--wide .stage p {
+  max-width: 68ch;
+}
+.demo-issues {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 40px;
+}
+.demo-issues .demo-issue {
+  margin-top: 0;
+}
+.sec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+}
+.sec-card {
+  padding: 26px 28px;
+  border-radius: 22px;
+  background: var(--surface);
+}
+.sec-card h2 {
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.sec-card p,
+.sec-card li {
+  color: var(--ink-2);
+  font-size: 16.5px;
+}
+.sec-card > p {
+  margin-top: 12px;
+}
+.sec-card--wide {
+  grid-column: 1 / -1;
+}
+@media (max-width: 860px) {
+  .demo-issues,
+  .sec-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Landing FAQ: centred */
+.faq-section .section-head {
+  margin-inline: auto;
+  text-align: center;
+}
+.faq-section .faq {
+  margin-inline: auto;
+}
+.faq-section .display-2 {
+  margin-inline: auto;
+}
+/* Side by side, both issues share one set of rows (subgrid), so their cases line up whatever their lengths. */
+@media (min-width: 861px) {
+  .demo-issues {
+    grid-template-rows: repeat(4, auto);
+    row-gap: 12px;
+  }
+  .demo-issues .demo-issue {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+  }
+  .demo-issues .demo-cases {
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    margin-top: 4px;
+  }
+}

@@ -60,7 +60,7 @@ export function DemoPage() {
   const blocked = starting !== null || !!info?.live || usedUp;
 
   return (
-    <article className="doc-page demo-page">
+    <article className="doc-page doc-page--wide demo-page">
       <header className="doc-page__head">
         <h1 className="display-1">Watch a live check</h1>
         <p className="section-lead">
@@ -104,35 +104,40 @@ export function DemoPage() {
         </div>
       )}
 
-      {info &&
-        groupCases(info.cases).map((issue) => (
-          <section key={issue.instance_id} className="demo-issue" aria-labelledby={`issue-${issue.instance_id}`}>
-            <p className="demo-issue__repo">{issue.repo}</p>
-            <h2 id={`issue-${issue.instance_id}`} className="demo-issue__title">
-              {issue.title}
-            </h2>
-            <ul className="demo-cases">
-              {issue.cases.map((c) => (
-                <li key={c.id} className="demo-case">
-                  <div className="demo-case__text">
-                    <h3>{KIND_LABEL[c.kind] ?? c.kind}</h3>
-                    <p>{c.summary}</p>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn--primary btn--sm"
-                    disabled={blocked}
-                    aria-describedby={`issue-${issue.instance_id}`}
-                    onClick={() => run(c.id)}
-                  >
-                    <Play size={15} aria-hidden="true" />
-                    {starting === c.id ? "Starting…" : "Run this check"}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+      {info && (
+        <div className="demo-issues">
+          {groupCases(info.cases).map((issue) => (
+            <section key={issue.instance_id} className="demo-issue" aria-labelledby={`issue-${issue.instance_id}`}>
+              <header>
+                <p className="demo-issue__repo">{issue.repo}</p>
+                <h2 id={`issue-${issue.instance_id}`} className="demo-issue__title">
+                  {issue.title}
+                </h2>
+              </header>
+              <ul className="demo-cases">
+                {issue.cases.map((c) => (
+                  <li key={c.id} className="demo-case">
+                    <div className="demo-case__text">
+                      <h3>{KIND_LABEL[c.kind] ?? c.kind}</h3>
+                      <p>{c.summary}</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn--primary btn--sm"
+                      disabled={blocked}
+                      aria-describedby={`issue-${issue.instance_id}`}
+                      onClick={() => run(c.id)}
+                    >
+                      <Play size={15} aria-hidden="true" />
+                      {starting === c.id ? "Starting…" : "Run this check"}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
 
       {info && info.gallery.length > 0 && (
         <section className="demo-gallery" aria-labelledby="gallery-title">

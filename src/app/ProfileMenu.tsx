@@ -1,4 +1,4 @@
-import { BookOpen, ChevronsUpDown, House, LogOut, Settings } from "lucide-react";
+import { BookOpen, ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { api, type Usage } from "../api";
@@ -114,12 +114,6 @@ export function ProfileMenu() {
               <Link to="/docs">
                 <BookOpen size={17} aria-hidden="true" />
                 Docs and help
-              </Link>
-            </li>
-            <li>
-              <Link to="/">
-                <House size={17} aria-hidden="true" />
-                Receipts website
               </Link>
             </li>
           </ul>

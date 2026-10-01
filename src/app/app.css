@@ -512,29 +512,6 @@
   outline-offset: 2px;
 }
 
-.accounts {
-  list-style: none;
-  margin: 14px 0 0;
-  padding: 0;
-}
-.accounts li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 56px;
-}
-.accounts li + li {
-  border-top: 1px solid var(--hair);
-}
-.accounts__on {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--ok);
-  font-weight: 600;
-  font-size: 14px;
-}
 .app-page > .panel + .panel {
   margin-top: 20px;
 }

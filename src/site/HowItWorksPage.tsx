@@ -46,7 +46,7 @@ export function HowItWorksPage() {
   }, []);
 
   return (
-    <article className="doc-page">
+    <article className="doc-page doc-page--wide">
       <header className="doc-page__head">
         <h1 className="display-1">How a check works</h1>
         <p className="section-lead">
