@@ -30,18 +30,17 @@ this app's origin (`http://localhost:5173` by default), or the browser blocks it
 
 ## Deploy on Vercel
 
-The backend runs on Google Cloud Run (see `receipts-backend`'s README). Vercel serves this app and forwards
-`/api/*` to the backend (`vercel.json`), so the browser talks to one origin and the session cookie stays
-first-party, even on the free `*.vercel.app` and `*.run.app` hostnames. Live events stream straight from the
-backend (`VITE_EVENTS_URL`), because Vercel ends proxied requests after 120 seconds; that stream is public and
-needs no cookie.
+The backend runs on Render at `https://receipts-backend-wnjy.onrender.com` (see `receipts-backend`'s
+README). Vercel serves this app and forwards `/api/*` to the backend (`vercel.json`), so the browser talks to
+one origin and the session cookie stays first-party, even on the free `*.vercel.app` and `*.onrender.com`
+hostnames. Live events stream straight from the backend (`VITE_EVENTS_URL`), because Vercel ends proxied
+requests after 120 seconds; that stream is public and needs no cookie.
 
-1. In `vercel.json`, replace `CLOUD-RUN-SERVICE-URL` with the backend's host (e.g.
-   `receipts-api-123456789.us-east5.run.app`).
+1. `vercel.json` forwards `/api/*` to the backend; change its host there if the backend moves.
 2. Vercel > Add New > Project > import this repository. Vite is detected: build `npm run build`, output
    `dist`.
-3. Environment variable `VITE_EVENTS_URL` = `https://<cloud-run-url>` (Production and Preview). Leave
-   `VITE_API_URL` unset: production builds then call `/api` on their own origin.
+3. Environment variable `VITE_EVENTS_URL` = `https://receipts-backend-wnjy.onrender.com` (Production and
+   Preview). Leave `VITE_API_URL` unset: production builds then call `/api` on their own origin.
 4. Deploy, then set the backend's `FRONTEND_URL` to this app's URL (CORS for the event stream, redirects after
    sign-in).
 
