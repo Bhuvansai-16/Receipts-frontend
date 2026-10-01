@@ -1,6 +1,15 @@
 // Typed client for the Receipts API (receipts-backend: receipts/server.py).
+import { resolveUrls } from "./config";
 
-export const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
+const URLS = resolveUrls({
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  VITE_EVENTS_URL: import.meta.env.VITE_EVENTS_URL,
+  DEV: import.meta.env.DEV,
+});
+/** The API, or "" for this site's own origin (Vercel forwards /api). */
+export const API_URL = URLS.api;
+/** Live events: straight from the backend, past Vercel's 120 s proxy limit. */
+export const EVENTS_URL = URLS.events;
 
 export type Verdict = "PROVEN" | "REFUTED" | "REGRESSION" | "UNPROVEN" | "NO_CHECKABLE_CLAIM";
 export type PrKind = "gold" | "none" | "diff";
@@ -256,7 +265,7 @@ export const EVENT_TYPES = [
  * rebuilt from scratch on open: `onEvents` always receives the complete, de-duplicated sequence.
  */
 export function subscribe(runId: string, onEvents: (events: ReceiptEvent[]) => void): () => void {
-  const source = new EventSource(`${API_URL}/api/runs/${enc(runId)}/events`); // public: no cookies needed
+  const source = new EventSource(`${EVENTS_URL}/api/runs/${enc(runId)}/events`); // public: no cookies needed
   let events: ReceiptEvent[] = [];
   source.onopen = () => {
     events = [];

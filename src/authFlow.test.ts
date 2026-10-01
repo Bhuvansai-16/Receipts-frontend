@@ -47,6 +47,15 @@ describe("socialCallbacks", () => {
       errorCallbackURL: "http://localhost:5173/signin?error=oauth",
     });
   });
+
+  it("builds absolute callbacks when the API shares the site's origin (Vercel forwards /api)", () => {
+    const back = "https://receipts.vercel.app/api/auth/complete?next=https%3A%2F%2Freceipts.vercel.app%2Fapp";
+    expect(socialCallbacks("/app", "https://receipts.vercel.app", "")).toEqual({
+      callbackURL: back,
+      newUserCallbackURL: back,
+      errorCallbackURL: "https://receipts.vercel.app/signin?error=oauth",
+    });
+  });
 });
 
 describe("returnedFromSocialSignIn", () => {

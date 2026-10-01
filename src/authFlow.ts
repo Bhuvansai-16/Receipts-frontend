@@ -1,4 +1,5 @@
 // Helpers for the sign-in and sign-up pages.
+import { absoluteBase } from "./config";
 
 /** Where to go after signing in: only paths inside this app (no open redirect). */
 export function safeNext(next: string | null): string {
@@ -7,7 +8,7 @@ export function safeNext(next: string | null): string {
 
 /** Neon returns the browser to the API, which finishes sign-in and forwards to `next` (receipts/auth.py). */
 export function socialCallbacks(next: string, origin: string, apiUrl: string) {
-  const back = `${apiUrl}/api/auth/complete?next=${encodeURIComponent(origin + next)}`;
+  const back = `${absoluteBase(apiUrl, origin)}/api/auth/complete?next=${encodeURIComponent(origin + next)}`;
   // New accounts get newUserCallbackURL; without it Neon sends them to the site's home page instead.
   return { callbackURL: back, newUserCallbackURL: back, errorCallbackURL: `${origin}/signin?error=oauth` };
 }
