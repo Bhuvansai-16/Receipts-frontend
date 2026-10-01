@@ -34,7 +34,7 @@ const UNPROVEN: { match: RegExp; headline: string; body: string; next?: string }
   {
     match: /did not run on the PR/,
     headline: "The test didn't run with the change",
-    body: "With the pull request applied, the blind test was skipped or not collected, so the result can't count.",
+    body: "With the pull request applied, the blind test didn't run every time (skipped, not collected, or a sandbox error), so the result can't count.",
   },
   {
     match: /existing test suite could not run/,

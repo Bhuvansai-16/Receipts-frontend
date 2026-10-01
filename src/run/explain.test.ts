@@ -66,6 +66,7 @@ describe("explainVerdict", () => {
       ["base runs disagree on which tests fail (flaky)", "The original code gave different results"],
       ["patch does not apply to the base commit", "The change didn't apply cleanly"],
       ["the blind test did not run on the PR (deselected or not collected)", "The test didn't run with the change"],
+      ["the blind test did not run on the PR in 1/3 runs (sandbox error or timeout)", "The test didn't run with the change"],
       ["existing test suite could not run", "The existing tests couldn't run"],
       ["second opinion doubts the test: checks formatting", "The test may not match the issue"],
       ["pipeline error: EnvironmentSetupError: setting up octo/hello failed: pip", "The repository couldn't be set up"],
