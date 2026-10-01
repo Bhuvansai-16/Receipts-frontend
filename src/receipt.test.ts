@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Evidence, ReceiptEvent } from "./api";
 import type { RunSummary } from "./api";
-import { activeStep, blindTestNote, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, runLabel, timeAgo } from "./receipt";
+import { activeStep, blindTestNote, formatDuration, formatTokens, fromEvents, fromEvidence, issueNumber, receiptTitle, repoOf, runLabel, safeHref, timeAgo } from "./receipt";
 
 const e = (type: string, data: Record<string, unknown> = {}): ReceiptEvent => ({ type, data });
 const fail = (msg: string) => ({ tests: 1, not_passed: { "t.py::t": { outcome: "failed", exc: "AssertionError", msg } }, output_tail: "out" });
@@ -184,5 +184,19 @@ describe("blindTestNote", () => {
     expect(blindTestNote(fromEvents([e("writer_retry", { model: "m" })]))).toBe(
       "written from the issue alone, after one automatic retry",
     );
+  });
+});
+
+describe("safeHref", () => {
+  it("lets only web links through, since receipts are public pages", () => {
+    expect(safeHref("https://docs.sympy.org/latest/modules/core.html")).toBe("https://docs.sympy.org/latest/modules/core.html");
+    expect(safeHref("http://example.org/a")).toBe("http://example.org/a");
+    for (const bad of ["javascript:alert(1)", "JavaScript://docs.sympy.org/%0Aalert(1)", "data:text/html,x", "/relative", "", undefined, null])
+      expect(safeHref(bad)).toBeUndefined();
+  });
+
+  it("drops an unsafe pull request link from the receipt title", () => {
+    const ev = { instance_id: "x", source: { repo: "o/r", pr_number: 1, head_sha: "h", url: "javascript:alert(1)" } } as Evidence;
+    expect(receiptTitle(ev).url).toBeNull();
   });
 });

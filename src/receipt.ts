@@ -173,10 +173,15 @@ export const PR_LABEL: Record<string, string> = {
   github: "Pull request",
 };
 
+/** A link taken from evidence, if it is a web link. Receipts are public pages: never render javascript: or data:. */
+export function safeHref(url: string | null | undefined): string | undefined {
+  return url && /^https?:\/\//i.test(url) ? url : undefined;
+}
+
 /** The receipt's heading line: repository, what was checked, and where it lives on GitHub. */
 export function receiptTitle(ev: Evidence): { repo: string; label: string; pr: string | null; url: string | null } {
   if (ev.source)
-    return { repo: ev.source.repo, label: `PR #${ev.source.pr_number}`, pr: null, url: ev.source.url ?? null };
+    return { repo: ev.source.repo, label: `PR #${ev.source.pr_number}`, pr: null, url: safeHref(ev.source.url) ?? null };
   return {
     repo: ev.repo ?? repoOf(ev.instance_id),
     label: `issue #${issueNumber(ev.instance_id)}`,

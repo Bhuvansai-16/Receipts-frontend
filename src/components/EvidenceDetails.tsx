@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { API_URL, type Evidence, type RunSummaryRaw, type Submission } from "../api";
+import { safeHref } from "../receipt";
 
 /** Everything behind the verdict, one disclosure per question a reviewer would ask. */
 export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; runId: string }) {
@@ -7,7 +8,7 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
   const f = ev.forks;
   const baseSuite = Array.isArray(f?.base_suite) ? f?.base_suite[0] : f?.base_suite;
   const log = w?.tool_log ?? [];
-  const sources = ev.research?.sources ?? [];
+  const sources = (ev.research?.sources ?? []).filter((s) => safeHref(s.url));
   const firstTries = ev.writer_first?.submissions ?? [];
   const tries = w?.submissions ?? [];
 

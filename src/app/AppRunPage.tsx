@@ -5,7 +5,7 @@ import { api } from "../api";
 import { EvidenceDetails } from "../components/EvidenceDetails";
 import { ReceiptCard } from "../components/ReceiptCard";
 import { VerdictChip, verdictLabel } from "../components/VerdictChip";
-import { formatDuration, formatTokens, receiptTitle, timeAgo } from "../receipt";
+import { formatDuration, formatTokens, receiptTitle, safeHref, timeAgo } from "../receipt";
 import { explainVerdict } from "../run/explain";
 import { progressSteps, type StepState } from "../run/progress";
 import { reveal, useRun } from "../run/useRun";
@@ -146,8 +146,8 @@ export function AppRunPage() {
           ) : (
             <span className="status">Stopped</span>
           )}
-          {source && (
-            <a href={source.url} target="_blank" rel="noreferrer" className="btn btn--quiet btn--sm">
+          {safeHref(source?.url) && (
+            <a href={safeHref(source?.url)} target="_blank" rel="noreferrer" className="btn btn--quiet btn--sm">
               <ExternalLink size={14} aria-hidden="true" />
               Open PR
             </a>
