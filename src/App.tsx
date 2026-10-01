@@ -8,6 +8,7 @@ import { PullRequests } from "./app/PullRequests";
 import { ReceiptsPage } from "./app/ReceiptsPage";
 import { Repositories } from "./app/Repositories";
 import { AuthPage } from "./pages/AuthPage";
+import { DemoPage } from "./pages/DemoPage";
 import { NewCheckPage } from "./pages/NewCheck";
 import { RunPage } from "./pages/RunPage";
 import { SessionProvider, useSession } from "./session";
@@ -27,6 +28,7 @@ export function App() {
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             <Route path="/security" element={<SecurityPage />} />
             <Route path="/docs" element={<DocsPage />} />
+            <Route path="/demo" element={<DemoPage />} />
             <Route path="/runs/:runId" element={<RunPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -35,6 +35,23 @@ export interface RunSummary {
   pr_number?: number | null;
 }
 
+/** A hand-picked demo check (receipts-backend: receipts/demo.py); its patch text stays on the server. */
+export interface DemoCase {
+  id: string;
+  instance_id: string;
+  repo: string;
+  title: string;
+  kind: string;
+  summary: string;
+}
+
+export interface DemoInfo {
+  cases: DemoCase[];
+  live: string | null;
+  gallery: RunSummary[];
+  left_today: number;
+}
+
 export interface Usage {
   active: number;
   today: number;
@@ -211,6 +228,9 @@ export const api = {
   checkPull: (fullName: string, number: number) =>
     send<{ run_id: string }>("POST", `/api/github/repos/${fullName}/pulls/${number}/check`),
   start: (body: { instance_id: string; pr: PrKind; diff?: string }) => send<{ run_id: string }>("POST", "/api/runs", body),
+  demo: () => get<DemoInfo>("/api/demo"),
+  startDemo: (caseId: string) =>
+    send<{ run_id: string; joined: boolean }>("POST", "/api/demo/runs", { case: caseId }),
 };
 
 /** Every event a check emits: EventSource drops a type that has no listener. */

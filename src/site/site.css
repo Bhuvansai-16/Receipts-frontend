@@ -1006,3 +1006,77 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Live demo (/demo): hand-picked checks grouped by issue, then finished demo receipts. */
+.demo-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 24px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+.demo-error {
+  margin-top: 16px;
+  color: var(--bad);
+}
+.demo-skeleton {
+  margin-top: 32px;
+}
+.demo-issue {
+  margin-top: 40px;
+}
+.demo-issue__repo {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.demo-issue__title {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.demo-cases {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.demo-case {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: var(--surface);
+}
+.demo-case__text h3 {
+  font-size: 16px;
+  font-weight: 650;
+}
+.demo-case__text p {
+  margin-top: 4px;
+  color: var(--ink-2);
+}
+.demo-case .btn {
+  flex-shrink: 0;
+}
+.demo-gallery {
+  margin-top: 56px;
+}
+.demo-foot {
+  margin-top: 40px;
+  color: var(--ink-2);
+}
+@media (max-width: 767px) {
+  .demo-case {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -81,6 +81,9 @@ function Runs({ passed }: { passed: boolean }) {
 export function HomePage() {
   const { user } = useSession();
   const start = user ? { to: "/app", label: "Open app" } : { to: "/signup", label: "Get started" };
+  // Signed out, the first thing to do is watch a real check; sign-up comes second.
+  const hero = user ? start : { to: "/demo", label: "Watch a live check" };
+  const heroSecondary = user ? { to: EXAMPLE_LINK, label: "See an example" } : start;
 
   useEffect(() => {
     document.title = "Receipts · Proof that a pull request does what it claims";
@@ -99,12 +102,12 @@ export function HomePage() {
             evidence.
           </p>
           <div className="hero__ctas">
-            <Link to={start.to} className="btn btn--primary btn--lg">
-              {start.label}
+            <Link to={hero.to} className="btn btn--primary btn--lg">
+              {hero.label}
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
-            <Link to={EXAMPLE_LINK} className="btn btn--quiet btn--lg">
-              See an example
+            <Link to={heroSecondary.to} className="btn btn--quiet btn--lg">
+              {heroSecondary.label}
             </Link>
           </div>
         </div>

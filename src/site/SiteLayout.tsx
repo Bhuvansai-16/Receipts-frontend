@@ -7,6 +7,7 @@ import { useSession } from "../session";
 import "./site.css";
 
 const LINKS = [
+  { to: "/demo", label: "Live demo" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/security", label: "Security" },
   { to: "/docs", label: "Docs" },
