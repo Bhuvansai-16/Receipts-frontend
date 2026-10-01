@@ -77,7 +77,7 @@ export function AuthShowcase() {
           <GitPullRequest size={18} />
         </span>
         <span>
-          <strong>PR #29 fixed part of it</strong>
+          <strong>PR #29 may miss part of it</strong>
           <small>Abs(z)**4 still comes out wrong</small>
         </span>
       </div>

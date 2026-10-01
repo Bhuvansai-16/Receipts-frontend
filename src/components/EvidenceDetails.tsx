@@ -103,11 +103,11 @@ export function EvidenceDetails({ evidence: ev, runId }: { evidence: Evidence; r
           <details className="disclosure" open={!ev.second_opinion.faithful}>
             <summary>
               Second opinion
-              <span className="disclosure__meta">checked before any negative verdict, and to explain a mixed result</span>
+              <span className="disclosure__meta">checked before any negative verdict, and to explain a partial fix</span>
             </summary>
             <div className="disclosure__body">
               <p>
-                <strong style={{ color: "var(--ink)" }}>{ev.second_opinion.faithful ? "Agrees" : "Doubts the test"}.</strong>{" "}
+                <strong style={{ color: "var(--ink)" }}>{ev.second_opinion.faithful ? "Backs the test" : "Doubts the test"}.</strong>{" "}
                 {ev.second_opinion.reason}
               </p>
             </div>

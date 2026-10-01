@@ -12,19 +12,29 @@ function explain(verdict: string, reason: string, extra: ReceiptEvent[] = []) {
 
 describe("explainVerdict", () => {
   it("says what Proven means and what to do", () => {
-    const x = explain("PROVEN", "test fails on base and passes on the PR in 3/3 runs; existing tests hold");
+    const x = explain("PROVEN", "test fails on base and passes on the PR in 3/3 runs; existing tests hold", [
+      e("suite", { base_passed: 30, base_total: 31, pr_failed: 0 }),
+    ]);
     expect(x.tone).toBe("ok");
     expect(x.headline).toBe("The pull request does what it claims");
+    expect(x.body).toContain("the existing tests still pass");
+  });
+
+  it("doesn't say existing tests pass when none ran", () => {
+    const x = explain("PROVEN", "test fails on base and passes on the PR in 3/3 runs; no existing tests were found to run");
+    expect(x.body).not.toContain("still pass");
+    expect(x.body).toContain("No existing tests were found to run");
   });
 
   // A mixed result alone can't say whether the change missed part of the issue or the test is wrong
-  // (sympy #16: the test expected an evaluated -x - 2). Only a second opinion decides which way to word it.
+  // (sympy #15: the test could never pass). The backend asks a second opinion only when the runs show a partial fix.
   const MIXED = "PR runs are mixed or fail differently from base";
   const prFail = e("fork", { side: "pr", n: 1, passed: false, message: "Expected z**4, got -z**4" });
 
   it("words a mixed result neutrally without a second opinion", () => {
     const x = explain("UNPROVEN", MIXED, [prFail]);
-    expect(x.headline).toBe("Part of the blind test passes with the change");
+    expect(x.headline).toBe("The blind test fails differently with the change");
+    expect(x.body).not.toContain("part of the blind test passes");
     expect(x.body).toContain("or the test expects something the issue doesn't");
     expect(x.detail).toBe("Expected z**4, got -z**4");
   });
@@ -38,12 +48,14 @@ describe("explainVerdict", () => {
     expect(x.body).toContain("It expects an evaluated expression.");
   });
 
-  it("calls it a partial fix only when the second opinion backs the failing check", () => {
+  it("hedges a partial fix even when the second opinion backs the failing check", () => {
+    // sympy #15 live: the second model backed a check that could never pass. A model's view is not a finding.
     const x = explain("UNPROVEN", MIXED, [
       prFail,
       e("second_opinion", { faithful: true, reason: "The issue asks for z**4.", about: "mixed" }),
     ]);
-    expect(x.headline).toBe("The pull request fixed part of it");
+    expect(x.headline).toBe("The change may miss part of the issue");
+    expect(x.body).toContain("can be wrong");
     expect(x.detail).toBe("Expected z**4, got -z**4");
   });
 

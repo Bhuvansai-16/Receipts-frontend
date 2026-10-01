@@ -169,7 +169,7 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
         {r.secondOpinion && (
           <Line
             label="Second opinion"
-            value={r.secondOpinion.faithful ? "agrees" : "doubts the test"}
+            value={r.secondOpinion.faithful ? "backs the test" : "doubts the test"}
             note={r.secondOpinion.reason}
             clamp
           />

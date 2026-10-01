@@ -43,8 +43,8 @@ const UNPROVEN: { match: RegExp; headline: string; body: string; next?: string }
   },
   {
     match: /mixed or fail differently/,
-    headline: "Part of the blind test passes with the change",
-    body: "With the change, part of the blind test passes and part still fails, differently from before. That can mean the change misses part of the issue, or the test expects something the issue doesn't.",
+    headline: "The blind test fails differently with the change",
+    body: "With the change applied, the blind test no longer fails the way it did on the original code, but it doesn't pass either. That can mean the change misses part of the issue, or the test expects something the issue doesn't.",
     next: "Read the failing assertion before merging.",
   },
   {
@@ -86,7 +86,9 @@ function explainBase(r: Receipt, ev: Evidence): Explanation {
       return {
         tone: "ok",
         headline: "The pull request does what it claims",
-        body: "The blind test failed on the original code and passed with the change, three times each, and the existing tests still pass.",
+        body: `The blind test failed on the original code and passed with the change, three times each${
+          r.suite ? ", and the existing tests still pass." : ". No existing tests were found to run for this change."
+        }`,
         next: "Safe to review first.",
       };
     case "REFUTED":
@@ -112,14 +114,15 @@ function explainBase(r: Receipt, ev: Evidence): Explanation {
         next: "Link the issue with \"Fixes #123\" in the pull request description, then check again.",
       };
   }
-  // A mixed result can mean a partial fix or a wrong test; only the second opinion picks the words.
+  // A mixed result can mean a partial fix or a wrong test. The backend asks a second opinion only when the runs show
+  // a partial fix, and a model's view is worded as one (sympy #15: it backed a check that could never pass).
   if (/mixed or fail differently/.test(reason) && r.secondOpinion)
     return r.secondOpinion.faithful
       ? {
           tone: "neutral",
-          headline: "The pull request fixed part of it",
-          body: `With the change, part of the blind test passes, but a check the issue asks for still fails. A second model agrees that check matches the issue: ${r.secondOpinion.reason}`,
-          next: "Share the failing case with the author before merging.",
+          headline: "The change may miss part of the issue",
+          body: `With the change, part of the blind test passes and the rest fails exactly as it did on the original code. A second model thinks the failing check is one the issue asks for: ${r.secondOpinion.reason} A model can be wrong, so read the failing assertion before acting on it.`,
+          next: "Read the failing case, then share it with the author if it holds.",
           detail: prFailure,
         }
       : {
