@@ -1,8 +1,22 @@
 # Receipts UI
 
-React front end for Receipts: landing page, sign-up and sign-in (email and password, or GitHub), the check
-form with your receipts, and public receipt pages. It talks only to the Receipts API (`receipts-backend`),
-which handles sign-in through Neon Auth and stores runs in Neon Postgres.
+**Proof that a pull request does what it claims.** This is the web app for Receipts: the landing page, the
+no-sign-in live demo, sign-in, your repositories and pull requests, and public receipt pages.
+
+[![tests](https://github.com/Bhuvansai-16/Receipts-frontend/actions/workflows/tests.yml/badge.svg)](https://github.com/Bhuvansai-16/Receipts-frontend/actions/workflows/tests.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Live demo](https://img.shields.io/badge/live%20demo-no%20sign--in-black.svg)](https://receipts-frontend-six.vercel.app/demo)
+
+- **Live:** https://receipts-frontend-six.vercel.app (demo with no account at
+  [/demo](https://receipts-frontend-six.vercel.app/demo))
+- **The main README**, with how Receipts works and how it uses NVIDIA Nemotron on Nebius Token Factory, is in
+  [Bhuvansai-16/Receipts-backend](https://github.com/Bhuvansai-16/Receipts-backend).
+
+<img src="docs/images/home.png" width="720" alt="The Receipts landing page: every pull request makes a claim, get the receipt">
+
+<img src="docs/images/receipt.png" width="560" alt="A public receipt: the blind test, three failing runs on the original code, three passing runs with the pull request, and the Proven verdict, with the test code below">
+
+It talks only to the Receipts API, which handles sign-in through Neon Auth and stores runs in Neon Postgres.
 
 ## Develop
 
