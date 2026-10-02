@@ -10,6 +10,7 @@ const LINKS = [
   { to: "/how-it-works", label: "How it works" },
   { to: "/security", label: "Security" },
   { to: "/docs", label: "Docs" },
+  { to: "/results", label: "Results" },
   { to: "/demo", label: "Live demo" },
 ];
 
@@ -128,6 +129,9 @@ function SiteFooter() {
               </li>
               <li>
                 <Link to="/docs">Docs</Link>
+              </li>
+              <li>
+                <Link to="/results">Results</Link>
               </li>
               <li>
                 <Link to="/demo">Live demo</Link>
