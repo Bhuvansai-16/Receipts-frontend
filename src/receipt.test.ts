@@ -219,3 +219,18 @@ describe("a reused blind test", () => {
     expect(stored.reusedFrom).toBe("x-gold-1");
   });
 });
+
+describe("the docs line", () => {
+  it("counts the pages Tavily found, live and stored", () => {
+    const live = fromEvents([e("claim", { kind: "fix", claim: "c" }), e("env_ready"), e("research", { sources: 5 })]);
+    expect(live.docs).toBe(5);
+    const stored = fromEvidence({ instance_id: "x", research: { queries: ["q"], sources: [{ title: "t", url: "u" }] } } as Evidence);
+    expect(stored.docs).toBe(1);
+  });
+
+  it("is absent with no research, no sources or a reused test", () => {
+    expect(fromEvents([e("research", { sources: 0 })]).docs ?? 0).toBe(0);
+    expect(fromEvidence({ instance_id: "x" } as Evidence).docs).toBeUndefined();
+    expect(fromEvents([e("test_reused", { from: "r" }), e("test_accepted", { attempts: 0 })]).docs).toBeUndefined();
+  });
+});

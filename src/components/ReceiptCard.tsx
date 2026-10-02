@@ -112,6 +112,14 @@ export function ReceiptCard({ receipt: r, evidence, live, queued, elapsed, onRev
           <Line label="Sandbox" value={r.envReady ? "ready" : <>preparing <Cursor /></>} pending={!r.envReady} />
         )}
 
+        {(r.docs ?? 0) > 0 && (
+          <Line
+            label="Docs"
+            value={`${r.docs} page${r.docs === 1 ? "" : "s"}`}
+            note="library documentation found with Tavily for the APIs the issue names"
+          />
+        )}
+
         {(wroteTest || printing("writer") || (!live && r.envReady)) && (
           <Line
             label="Blind test"

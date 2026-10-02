@@ -9,6 +9,8 @@ export interface Tile {
 export interface Receipt {
   claim?: { kind: string; claim: string };
   envReady: boolean;
+  /** Pages of library documentation the research brief found with Tavily for the APIs the issue names. */
+  docs?: number;
   submissions: { attempt: number; accepted: boolean; reason: string }[];
   writerCommands: number;
   /** Set when no test was accepted and the check retried writing once; model is the short model name. */
@@ -45,6 +47,7 @@ export function fromEvents(events: ReceiptEvent[]): Receipt {
     const d = data as Record<string, any>;
     if (type === "claim") r.claim = { kind: String(d.kind), claim: String(d.claim) };
     else if (type === "env_ready") r.envReady = true;
+    else if (type === "research") r.docs = Number(d.sources ?? 0);
     else if (type === "writer_submit")
       r.submissions.push({ attempt: Number(d.attempt), accepted: Boolean(d.accepted), reason: String(d.reason ?? "") });
     else if (type === "writer_progress") r.writerCommands = Number(d.commands);
@@ -84,6 +87,7 @@ function derive(ev: Evidence): Receipt {
   const r = empty();
   r.claim = ev.claim;
   r.envReady = ev.writer !== undefined;
+  if (ev.research) r.docs = ev.research.sources.length;
   if (ev.writer?.test_code) r.testAttempts = ev.writer.attempts;
   if (ev.writer?.reused_from) r.reusedFrom = ev.writer.reused_from;
   const f = ev.forks;
