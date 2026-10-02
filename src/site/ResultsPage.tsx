@@ -119,7 +119,10 @@ export function ResultsPage() {
 
         <section className="sec-card sec-card--wide">
           <h2>Every miss</h2>
-          <p>Each one links to its receipt: the blind test, every run and the reason.</p>
+          <p>
+            Each one links to its receipt: the blind test, every run and the reason. Every issue's five patches side by
+            side: <Link to="/races">the races</Link>.
+          </p>
           <ul className="doc-list">
             {results.misses.map((m) => (
               <li key={m.run_id}>
