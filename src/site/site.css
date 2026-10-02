@@ -71,7 +71,7 @@
   text-decoration: none;
   border-bottom: 1px solid var(--hair);
 }
-@media (max-width: 767px) {
+@media (max-width: 899px) { /* six links crowd the bar below ~900px */
   .sitenav,
   .sitenav__signin {
     display: none;
@@ -770,6 +770,23 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+.race-index {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  columns: 3 220px;
+  column-gap: 24px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.race {
+  scroll-margin-top: 88px;
+}
+.race h2,
+.race .results-note {
+  overflow-wrap: anywhere; /* issue titles carry long identifiers */
 }
 .results-note {
   margin-top: 14px;
