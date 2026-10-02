@@ -766,6 +766,16 @@
 .perm-table td {
   color: var(--ink-2);
 }
+.perm-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.results-note {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--ink-3);
+}
 
 .docs {
   display: grid;
