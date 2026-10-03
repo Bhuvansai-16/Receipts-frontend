@@ -110,7 +110,7 @@ export interface PullSummary {
   updated_at: string | null;
   head_sha: string;
   linked_issue: number | null;
-  latest: { id: string; status: RunStatus; verdict: Verdict | null } | null;
+  latest: { id: string; status: RunStatus; verdict: Verdict | null; head_sha: string | null } | null;
 }
 
 export interface ReceiptEvent {
@@ -238,6 +238,8 @@ export const api = {
   pulls: (fullName: string) => get<{ repo: Repo; pulls: PullSummary[] }>(`/api/github/repos/${fullName}/pulls`),
   checkPull: (fullName: string, number: number) =>
     send<{ run_id: string }>("POST", `/api/github/repos/${fullName}/pulls/${number}/check`),
+  checkAll: (fullName: string) =>
+    send<{ run_ids: string[]; left: number }>("POST", `/api/github/repos/${fullName}/check-all`),
   start: (body: { instance_id: string; pr: PrKind; diff?: string }) => send<{ run_id: string }>("POST", "/api/runs", body),
   demo: () => get<DemoInfo>("/api/demo"),
   startDemo: (caseId: string) =>
