@@ -20,6 +20,8 @@ It talks only to the Receipts API, which handles sign-in through Neon Auth and s
 
 ## Develop
 
+Needs Node 24 (npm 11 wrote `package-lock.json`; npm 10, which ships with Node 22, can't install it).
+
 ```bash
 npm install
 cp .env.example .env    # VITE_API_URL: where the API runs (default http://localhost:8000)
