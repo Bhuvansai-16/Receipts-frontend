@@ -109,7 +109,7 @@ export function DocsPage() {
 
         <section id="limits" className="doc-section">
           <h2>Limits</h2>
-          <p>Each account can run 2 checks at a time and 20 checks in any 24 hours. A check usually takes two to five minutes.</p>
+          <p>Each account can run 2 checks at a time and 5 checks in any 24 hours. A check usually takes two to five minutes.</p>
         </section>
 
         <section id="faq" className="doc-section">

@@ -68,7 +68,7 @@ const FAQ = [
   },
   {
     q: "How many checks can I run?",
-    a: "Each account can run 20 checks a day, two at a time.",
+    a: "Each account can run 5 checks a day, two at a time.",
   },
 ];
 
