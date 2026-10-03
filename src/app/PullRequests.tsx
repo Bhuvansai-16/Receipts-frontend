@@ -125,7 +125,8 @@ export function PullRequests() {
                       type="button"
                       className="btn btn--primary btn--sm"
                       onClick={() => check(pr)}
-                      disabled={starting !== null}
+                      disabled={starting === pr.number}
+                      aria-busy={starting === pr.number}
                     >
                       {starting === pr.number ? "Starting…" : pr.latest ? "Check again" : "Check this PR"}
                     </button>
