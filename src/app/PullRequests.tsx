@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, type PullSummary, type Repo } from "../api";
 import { VerdictChip } from "../components/VerdictChip";
 import { timeAgo } from "../receipt";
+import { uncheckedPulls } from "./pulls";
 
 export function PullRequests() {
   const { owner = "", repo: name = "" } = useParams();
@@ -13,6 +14,8 @@ export function PullRequests() {
   const [pulls, setPulls] = useState<PullSummary[] | null>(null);
   const [error, setError] = useState<string>();
   const [starting, setStarting] = useState<number | null>(null);
+  const [startingAll, setStartingAll] = useState(false);
+  const [notice, setNotice] = useState<string>();
 
   useEffect(() => {
     document.title = `${fullName} · Receipts`;
@@ -44,6 +47,27 @@ export function PullRequests() {
     }
   }
 
+  async function checkAll() {
+    setStartingAll(true);
+    setError(undefined);
+    setNotice(undefined);
+    try {
+      const { run_ids, left } = await api.checkAll(fullName);
+      const n = run_ids.length;
+      setNotice(
+        `Started ${n} ${n === 1 ? "check" : "checks"}; they run one after another.` +
+          (left ? ` ${left} more ${left === 1 ? "needs" : "need"} tomorrow's checks (daily limit).` : ""),
+      );
+      setPulls((await api.pulls(fullName)).pulls);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setStartingAll(false);
+    }
+  }
+
+  const todo = pulls ? uncheckedPulls(pulls).length : 0;
+
   return (
     <div className="app-page">
       <Link to="/app/repos" className="crumb">
@@ -55,14 +79,32 @@ export function PullRequests() {
           <h1 className="page-title">{fullName}</h1>
           <p className="lead">Open pull requests, with the latest receipt for each.</p>
         </div>
-        {repo && (
-          <a href={repo.url} target="_blank" rel="noreferrer" className="btn btn--quiet btn--sm">
-            On GitHub
-            <ExternalLink size={14} aria-hidden="true" />
-          </a>
-        )}
+        <div className="app-page__actions">
+          {pulls && pulls.length > 0 && (
+            <button
+              type="button"
+              className="btn btn--primary btn--sm"
+              onClick={checkAll}
+              disabled={todo === 0 || startingAll}
+              aria-busy={startingAll}
+            >
+              {startingAll ? "Starting…" : todo === 0 ? "All checked" : `Check all (${todo})`}
+            </button>
+          )}
+          {repo && (
+            <a href={repo.url} target="_blank" rel="noreferrer" className="btn btn--quiet btn--sm">
+              On GitHub
+              <ExternalLink size={14} aria-hidden="true" />
+            </a>
+          )}
+        </div>
       </header>
 
+      {notice && (
+        <p className="notice" role="status">
+          {notice}
+        </p>
+      )}
       {error && (
         <p className="error" role="alert">
           {error}
