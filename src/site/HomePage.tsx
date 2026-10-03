@@ -22,6 +22,16 @@ const VERDICTS: { verdict: Verdict; text: string }[] = [
   { verdict: "NO_CHECKABLE_CLAIM", text: "The pull request doesn't claim to fix a bug, so there's nothing to test." },
 ];
 
+// Measured on 199 SWE-bench Verified patches; the full write-up is eval/RESULTS.md in the backend repository.
+const RESULTS_MD = "https://github.com/Bhuvansai-16/Receipts-backend/blob/main/eval/RESULTS.md";
+const COMPARE = [
+  { label: "Wrong patches passed as fixes", receipts: "10%", reader: "46%" },
+  { label: "Wrong patches caught", receipts: "61%", reader: "53%" },
+  { label: "Real fixes confirmed", receipts: "66%", reader: "96%" },
+  { label: "Real fixes rejected", receipts: "9%", reader: "4%" },
+  { label: "No answer (Unproven or unsure)", receipts: "28%", reader: "1%" },
+];
+
 const GITHUB_POINTS = [
   { Icon: Zap, title: "Auto-check", text: "Turn it on for a repository and every new pull request gets checked by itself." },
   { Icon: MousePointerClick, title: "Check on demand", text: "Or open a repository in Receipts, pick a pull request and press Check." },
@@ -284,6 +294,43 @@ export function HomePage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="home-section measured" aria-labelledby="measured-title">
+        <header className="section-head">
+          <h2 id="measured-title" className="display-2">
+            Running a test beats reading the diff
+          </h2>
+          <p className="section-lead">
+            199 patches for 40 SWE-bench Verified issues, from real fixes to coding agents' wrong ones. SWE-bench's hidden
+            tests say which really fix the issue. A model that only read the diff passed almost half the wrong patches.
+          </p>
+        </header>
+        <div className="table-wrap">
+          <table className="perm-table">
+            <caption className="visually-hidden">Receipts compared with a model reading the diff</caption>
+            <thead>
+              <tr>
+                <th scope="col">Out of the patches</th>
+                <th scope="col" className="num">Receipts</th>
+                <th scope="col" className="num">Reading the diff</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">{row.label}</th>
+                  <td className="num">{row.receipts}</td>
+                  <td className="num">{row.reader}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <a href={RESULTS_MD} className="text-link">
+          How it was measured, and every miss
+          <ArrowRight size={16} aria-hidden="true" />
+        </a>
       </section>
 
       <section className="home-section trust" aria-labelledby="trust-title">

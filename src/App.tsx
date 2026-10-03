@@ -13,8 +13,6 @@ import { NewCheckPage } from "./pages/NewCheck";
 import { RunPage } from "./pages/RunPage";
 import { SessionProvider, useSession } from "./session";
 import { DocsPage } from "./site/DocsPage";
-import { RacesPage } from "./site/RacesPage";
-import { ResultsPage } from "./site/ResultsPage";
 import { HomePage } from "./site/HomePage";
 import { HowItWorksPage } from "./site/HowItWorksPage";
 import { SecurityPage } from "./site/SecurityPage";
@@ -30,8 +28,6 @@ export function App() {
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             <Route path="/security" element={<SecurityPage />} />
             <Route path="/docs" element={<DocsPage />} />
-            <Route path="/results" element={<ResultsPage />} />
-            <Route path="/races" element={<RacesPage />} />
             <Route path="/demo" element={<DemoPage />} />
             <Route path="/runs/:runId" element={<RunPage />} />
             <Route path="*" element={<NotFound />} />
